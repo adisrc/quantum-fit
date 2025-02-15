@@ -8,20 +8,12 @@
 // 8. Draw functions DONE
 
 import React, { useRef } from "react";
-import "./App.css";
-
-import Canvas from "./components/Canvas";
-import MediaPose from "./components/MediaPose";
-import PushupCounter from "./components/PushupCounter";
 import TempPushup from "./components/TempPushup";
 
 function App() {
 
   return (
-    //<Canvas/>
-    <TempPushup/>
-  //<PushupCounter/>
-    // <MediaPose/>
+    <TempPushup/> 
   );
 }
 

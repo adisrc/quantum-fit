@@ -159,15 +159,17 @@ const detectCurls = (landmarks) => {
 
     const thresholdUp = 50;
     const thresholdDown = 100;
- console.log(angle);
+ //console.log(angle,      curlState);
  
     setCurlState((prevCurlState) => {
-        if (angle < thresholdUp && prevCurlState === "Down") {
-            setCurlCount((prev) => prev + 1); // Increment count
+        if (angle < thresholdUp && prevCurlState === "Down" ) {
+            setCurlCount(prev=>prev+1); // Increment count
             return "Up"; // Update state
         } else if (angle > thresholdDown && prevCurlState === "Up") {
             return "Down"; // Reset state
         }
+        console.log(prevCurlState);
+        
         return prevCurlState; // Keep current state if no change
     });
 };
