@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import axios from "axios";
 import { useUser } from "@clerk/clerk-react";
+import { USER_API_END_POINT } from "../utils/constant";
 
 export default function Profile() {
   const { isLoaded, isSignedIn, user } = useUser();
@@ -9,11 +10,15 @@ export default function Profile() {
     if (isLoaded && isSignedIn) {
       const sendUserData = async () => {
         try {
-          const response = await axios.post("http://localhost:5000/api/data", {
-            userId: user.id, // Send Clerk userId
-          });
+          const response = await axios.post(`${USER_API_END_POINT}/user`, { userId: user.id},
+          {
+            headers:{
+                'Content-Type':'application/json',
+            } ,
+             withCredentials : true
+         });
 
-          console.log(response.data); // Response from backend
+         console.log(response.data); // Response from backend
         } catch (error) {
           console.error("Error sending data:", error);
         }
