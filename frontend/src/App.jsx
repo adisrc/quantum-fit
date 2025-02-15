@@ -1,20 +1,20 @@
-// 1. Install dependencies DONE
-// 2. Import dependencies DONE
-// 3. Setup webcam and canvas DONE
-// 4. Define references to those DONE
-// 5. Load posenet DONE
-// 6. Detect function DONE
-// 7. Drawing utilities from tensorflow DONE
-// 8. Draw functions DONE
+import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/clerk-react";
+import MediaPose from "./components/Pose";
+import Profile from "./components/Profile";
 
-import React, { useRef } from "react";
-import TempPushup from "./components/Pose";
-
-function App() {
-
+export default function App() {
   return (
-    <TempPushup/> 
+<div>
+<header>
+      <SignedOut>
+        <SignInButton />
+      </SignedOut>
+      <SignedIn>
+        <UserButton/>
+      </SignedIn>
+    </header>
+    <Profile/>
+    <MediaPose/>
+</div>
   );
 }
-
-export default App;
