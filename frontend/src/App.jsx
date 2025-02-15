@@ -9,11 +9,14 @@
 
 import React, { useRef } from "react";
 import TempPushup from "./components/Pose";
+import Hero from "./pages/Hero";
 
 function App() {
 
   return (
-    <TempPushup/> 
+    // <TempPushup/> 
+    <Hero />
+
   );
 }
 
