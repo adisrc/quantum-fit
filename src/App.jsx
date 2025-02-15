@@ -8,7 +8,7 @@
 // 8. Draw functions DONE
 
 import React, { useRef } from "react";
-import TempPushup from "./components/TempPushup";
+import TempPushup from "./components/Pose";
 
 function App() {
 
