@@ -3,12 +3,17 @@ import {User} from '../models/userSchema.js'
 export const Register = async (req, res)=>{
      try {
         const {userId} = req.body;
-        console.log(req.body)
-
-        const user = await User.findOne({userId});
-        console.log(user)
+       // console.log(req.body)
+     if(!userId){
+        return res.status(401).json({
+            message: "user not found",
+            success:false
+        })
+     }
+        let user = await User.findOne({userId});
+        //console.log(user)
         if(!user){ 
-             user =  await User.create( {userId:userId, email:email})
+             user =  await User.create({userId:userId})
         }
         return res.status(200).json({
             message: "user send successfully",

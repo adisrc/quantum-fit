@@ -26,7 +26,6 @@ const userSchema = new mongoose.Schema(
       },
       email: {
         type: String,
-        required: true,
         unique: true,
       },
       workouts: [WorkoutSchema], // Array of workout sessions
