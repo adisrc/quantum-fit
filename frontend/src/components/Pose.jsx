@@ -115,7 +115,7 @@ const MediaPose = () => {
     const hip = landmarks[23]; // Left hip
     const knee = landmarks[25]; // Left knee
     const ankle = landmarks[27]; // Left ankle
-    console.log(landmarks);
+    // console.log(landmarks);
     
     const angle = calculateAngle(hip, knee, ankle);
 
