@@ -7,9 +7,9 @@ import Leaderboard from "../components/leaderboard";
 
 const Hero = () => {
   const images = [
-    { url: "../public/images/feature1.jpeg", text: "Calorie Tracker" },
-    { url: "../public/images/feature2.png", text: "Exercise Counter" },
-    { url: "../public/images/feature3.webp", text: "Leaderboard"},
+    { url: "../images/feature1.jpeg", text: "Calorie Tracker" },
+    { url: "../images/feature2.png", text: "Exercise Counter" },
+    { url: "../images/feature3.webp", text: "Leaderboard"},
    
   ];
 
