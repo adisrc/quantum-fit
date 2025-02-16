@@ -1,24 +1,31 @@
-import {User} from '../models/userSchema.js'
+import { User } from '../models/userSchema.js'
 
-export const Register = async (req, res)=>{
-     try {
-        const {userId} = req.body;
+export const Register = async (req, res) => {
+    try {
+        const { userId } = req.body;
         console.log(req.body)
 
-        const user = await User.findOne({userId});
+        // console.log(req.body)
+        if (!userId) {
+            return res.status(401).json({
+                message: "user not found",
+                success: false
+            })
+        }
+        const user = await User.findOne({ userId });
         console.log(user)
-        if(!user){ 
-             user =  await User.create( {userId:userId, email:email})
+        if (!user) {
+            user = await User.create({ userId: userId, email: email })
         }
         return res.status(200).json({
             message: "user send successfully",
             user,
-            success:true
+            success: true
         })
 
-     } catch (error) {
+    } catch (error) {
         console.log(error)
-     }
+    }
 }
 export const Workout = async (req, res) => {
     try {
@@ -60,9 +67,9 @@ export const Workout = async (req, res) => {
         // Save updated user data
         await user.save();
 
-        return res.status(200).json({ message: "Workout added successfully", user , success:true});
+        return res.status(200).json({ message: "Workout added successfully", user, success: true });
     } catch (error) {
         console.error("Error updating workout:", error);
-        res.status(500).json({ message: "Internal Server Error", error , success:false});
+        res.status(500).json({ message: "Internal Server Error", error, success: false });
     }
 };
