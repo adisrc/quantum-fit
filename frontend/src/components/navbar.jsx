@@ -7,7 +7,7 @@ const Navbar = () => {
 
       <div className="container mx-auto flex justify-between items-center py-5 px-6">
         {/* Logo */}
-        <h1 className="text-xl font-bold text-white">Quantfit</h1>
+        <h1 className="text-3xl font-bold text-white pl-0">Quantfit</h1>
 
         {/* Navigation */}
         <nav className="hidden md:flex space-x-6">

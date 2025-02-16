@@ -10,12 +10,14 @@
 import React, { useRef } from "react";
 import TempPushup from "./components/Pose";
 import Hero from "./pages/Hero";
+import Workout from "./pages/Workout";
 
 function App() {
 
   return (
     // <TempPushup/> 
-    <Hero />
+    // <Hero />
+    <Workout />
 
   );
 }
