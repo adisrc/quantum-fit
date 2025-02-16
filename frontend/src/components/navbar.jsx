@@ -13,7 +13,7 @@ const Navbar = () => {
         <nav className="hidden md:flex space-x-6">
           <a href="#" className="text-white hover:text-orange-500 relative">
             HOME
-            <span className="absolute left-1/2 transform -translate-x-1/2 bottom-0 block h-1 w-1 bg-orange-500 rounded-full"></span>
+            {/* <span className="absolute left-1/2 transform -translate-x-1/2 bottom-0 block h-1 w-1 bg-orange-500 rounded-full"></span> */}
           </a>
         <a href="#" className="text-gray-300 hover:text-orange-500">ABOUT</a>
           <a href="#" className="text-gray-300 hover:text-orange-500">WORKOUTS</a>

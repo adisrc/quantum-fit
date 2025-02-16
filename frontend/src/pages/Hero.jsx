@@ -66,10 +66,10 @@ const Hero = () => {
         
         {/* Left Side Content */}
         <div className="max-w-lg text-white">
-          <h1 className="text-4xl md:text-5xl font-bold">
+          <h1 className="text-4xl md:text-7xl font-bold">
             Track Your <span className="text-yellow-400">Progress</span> Daily!
           </h1>
-          <p className="mt-4 text-lg opacity-80">
+          <p className="mt-4 text-xl opacity-80">
             Stay motivated and challenge yourself with our daily leaderboard.
             Compete with your friends and push your limits!
           </p>

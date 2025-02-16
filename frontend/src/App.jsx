@@ -16,8 +16,8 @@ function App() {
 
   return (
     // <TempPushup/> 
-    // <Hero />
-    <Workout />
+    <Hero />
+    // <Workout />
 
   );
 }

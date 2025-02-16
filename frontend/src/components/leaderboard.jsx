@@ -12,29 +12,31 @@ const Leaderboard = () => {
   ];
 
   return (
-    <div className="w-full h-full max-w-lg mx-auto bg-gradient-to-r from-purple-600 via-pink-500 to-orange-400 p-6 rounded-2xl shadow-lg text-white">
-      <h2 className="text-2xl font-bold text-center mb-4">🔥 Daily Leaderboard</h2>
+    <div className="w-full h-full max-w-lg mx-auto bg-gradient-to-r from-gray-900 via-gray-800 to-gray-700 p-6 rounded-2xl shadow-lg text-white">
+      <h2 className="text-2xl font-bold text-center mb-4">
+        🔥 Daily Leaderboard
+      </h2>
 
       <div className="space-y-3">
         {users.map((user) => (
           <div
             key={user.rank}
-            className={`flex items-center w-96 justify-between p-3 rounded-xl bg-white/10 transition transform hover:scale-105 ${
-              user.rank === 1 ? "bg-yellow-400 text-black" : ""
-            } ${user.rank === 2 ? "bg-gray-300 text-black" : ""} ${
-              user.rank === 3 ? "bg-orange-400 text-black" : ""}`}
+            className={`flex items-center w-96 justify-between p-3 rounded-xl bg-gradient-to-r from-gray-800 to-gray-700 hover:from-gray-700 hover:to-gray-600 transition transform hover:scale-105 ${
+              user.rank === 1 ? "bg-gradient-to-r from-yellow-500 to-yellow-200 text-black" : ""
+            } ${user.rank === 2 ? "bg-gradient-to-r from-red-300 to-blue-800 text-black" : ""} ${
+              user.rank === 3 ? "bg-gradient-to-r from-orange-400 to-orange-100 text-black" : ""}`}
           >
             {/* Rank Badge */}
-            <div className="flex items-center space-x-3 ">
+            <div className="flex items-center space-x-3">
               <span
                 className={`w-10 h-10 flex items-center justify-center text-lg font-bold rounded-full ${
                   user.rank === 1
                     ? "bg-yellow-600 text-white"
                     : user.rank === 2
-                    ? "bg-gray-500 text-white"
+                    ? "bg-gray-300 text-white"
                     : user.rank === 3
-                    ? "bg-orange-600 text-white"
-                    : "bg-white text-black"
+                    ? "bg-amber-600 text-white"
+                    : "bg-gray-500 text-white"
                 }`}
               >
                 {user.rank}
