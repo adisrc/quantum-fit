@@ -1,7 +1,9 @@
 import React, { useRef, useEffect, useState } from "react";
 import { FilesetResolver, PoseLandmarker } from "@mediapipe/tasks-vision";
+import { useLocation } from "react-router-dom";
 
 const MediaPose = () => {
+  const location = useLocation();
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
   const [poseLandmarker, setPoseLandmarker] = useState(null);
@@ -19,10 +21,17 @@ const MediaPose = () => {
   const [crunchState, setCrunchState] = useState("Up");
   const [curlState, setCurlState] = useState("Down");  // State for curl
   const [feedbackMessage, setFeedbackMessage] = useState("Perform your exercises!");
-  useEffect(() => {
-    console.log(workoutType);
 
-  }, [workoutType])
+  useEffect(() => {
+    if (location.state?.exerciseName) {
+      
+      
+      
+      setWorkoutType(location.state.exerciseName);
+      console.log(workoutType);
+    }
+  }, [location]);
+
 
   useEffect(() => {
     
@@ -81,10 +90,10 @@ const MediaPose = () => {
               });
 
               // 🔥 Call activity detection functions
-              if(workoutType=='squats')detectSquats(landmarks);
-              if(workoutType=='pushups')detectPushUps(landmarks);
-              if(workoutType=='crunches')detectCrunches(landmarks);
-              if(workoutType=='bicep-curls')detectCurls(landmarks);  // Detect curls
+              if(workoutType=='Squats')detectSquats(landmarks);
+              if(workoutType=='Push Ups')detectPushUps(landmarks);
+              if(workoutType=='Crunches')detectCrunches(landmarks);
+              if(workoutType=='Bicep Curls')detectCurls(landmarks);  // Detect curls
             });
           } else {
             // User not detected
@@ -207,17 +216,17 @@ const detectCurls = (landmarks) => {
 
   return (
     <div style={{ position: "relative", textAlign: "center" }}>
-      <select onChange={(e) => setWorkoutType(e.target.value)}>
-        <option value="bicep-curls">Bicep Curls</option>
-        <option value="pushups">Push-Ups</option>
-        <option value="squats">Squats</option>
-        <option value="crunches">Crunches</option>
+      <select value={workoutType} onChange={(e) => setWorkoutType(e.target.value)}>
+        <option value="Bicep Curls">Bicep Curls</option>
+        <option value="Push Ups">Push-Ups</option>
+        <option value="Squats">Squats</option>
+        <option value="Crunches">Crunches</option>
       </select>
 
-      {workoutType == "squats" && <h2>Squat Count: {squatCount}</h2>}
-      {workoutType == "pushups" && <h2>Push-Up Count: {pushUpCount}</h2>}
-      {workoutType == "crunches" && <h2>Crunch Count: {crunchCount}</h2>}
-      {workoutType == "bicep-curls" && <h2>Bicep Curl Count: {curlCount}</h2>}
+      {workoutType == "Squats" && <h2>Squat Count: {squatCount}</h2>}
+      {workoutType == "Push Ups" && <h2>Push-Up Count: {pushUpCount}</h2>}
+      {workoutType == "Crunches" && <h2>Crunch Count: {crunchCount}</h2>}
+      {workoutType == "Bicep Curls" && <h2>Bicep Curl Count: {curlCount}</h2>}
       <h3>{feedbackMessage}</h3>
       
       <video

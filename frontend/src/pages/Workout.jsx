@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { FaEdit } from "react-icons/fa"; // Import the edit icon
 import DialogBox from "../components/DialogBox"; // Import the DialogBox
 import Footer from "../components/footer";
+import { useNavigate } from "react-router-dom";
 
 const exercises = [
   {
@@ -12,7 +13,7 @@ const exercises = [
   },
   {
     id: 2,
-    name: "Jump Squats",
+    name: "Squats",
     image: "../images/feature2.png",
     video: "../videos/pushup.mp4",
   },
@@ -45,17 +46,27 @@ const exercises = [
 const Workout = () => {
   const [hovered, setHovered] = useState(null);
   const [openDialog, setOpenDialog] = useState(false);
-  const [selectedExercise, setSelectedExercise] = useState(null);
+  const [selectedExercise, setSelectedExercise] = useState("null");
 
   const handleEditClick = (exercise, event) => {
     event.stopPropagation(); // Prevents event bubbling issues
     setSelectedExercise(exercise);
     setOpenDialog(true);
   };
+  const navigate = useNavigate();
+
+  const handleStartClick = (exerciseName) => {
+    console.log(exerciseName);
+    navigate("/pose", { state: { exerciseName } }); // Passing exercise name as state
+  };
 
   return (
     <>
-      <div className={`min-h-screen bg-gradient-to-r from-[#141e30] to-[#243b55] py-10 px-6 transition ${openDialog ? "blur-sm" : ""}`}>
+      <div
+        className={`min-h-screen bg-gradient-to-r from-[#141e30] to-[#243b55] py-10 px-6 transition ${
+          openDialog ? "blur-sm" : ""
+        }`}
+      >
         <h1 className="text-center mt-12 text-4xl font-bold text-white mb-8 font-barlow">
           Choose Your{" "}
           <span className="bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-blue-300">
@@ -103,7 +114,10 @@ const Workout = () => {
                 <h2 className="text-2xl font-bold text-white font-barlow">
                   {exercise.name}
                 </h2>
-                <button className="mt-4 px-6 py-2 bg-gradient-to-r from-cyan-500 to-blue-500 text-white font-semibold rounded-full shadow-lg hover:scale-105 transition">
+                <button
+                  onClick={() => handleStartClick(exercise.name)}
+                  className="mt-4 px-6 py-2 bg-gradient-to-r from-cyan-500 to-blue-500 text-white font-semibold rounded-full shadow-lg hover:scale-105 transition"
+                >
                   Start Workout
                 </button>
               </div>
@@ -114,10 +128,10 @@ const Workout = () => {
 
       {/* Dialog Component with Blur Background */}
       {openDialog && (
-          <DialogBox
-            exercise={selectedExercise}
-            onClose={() => setOpenDialog(false)}
-          />
+        <DialogBox
+          exercise={selectedExercise}
+          onClose={() => setOpenDialog(false)}
+        />
       )}
       <Footer />
     </>
