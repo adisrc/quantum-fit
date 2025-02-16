@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import Navbar from "../components/navbar";
 import { FaEdit } from "react-icons/fa"; // Import the edit icon
 import DialogBox from "../components/DialogBox"; // Import the DialogBox
 import Footer from "../components/footer";
@@ -56,7 +55,6 @@ const Workout = () => {
 
   return (
     <>
-      <Navbar />
       <div className={`min-h-screen bg-gradient-to-r from-[#141e30] to-[#243b55] py-10 px-6 transition ${openDialog ? "blur-sm" : ""}`}>
         <h1 className="text-center mt-12 text-4xl font-bold text-white mb-8 font-barlow">
           Choose Your{" "}

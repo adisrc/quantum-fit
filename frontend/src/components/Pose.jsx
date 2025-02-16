@@ -219,6 +219,7 @@ const detectCurls = (landmarks) => {
       {workoutType == "crunches" && <h2>Crunch Count: {crunchCount}</h2>}
       {workoutType == "bicep-curls" && <h2>Bicep Curl Count: {curlCount}</h2>}
       <h3>{feedbackMessage}</h3>
+      
       <video
         ref={videoRef}
         className="input_video"

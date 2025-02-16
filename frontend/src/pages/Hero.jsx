@@ -1,5 +1,4 @@
 import React from "react";
-import Navbar from "../components/navbar";
 import Footer from "../components/footer";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
@@ -27,8 +26,7 @@ const Hero = () => {
 
   return (
     <>
-    <Navbar />
-    <div className="flex flex-col min-h-screen pt-20 pb-20">
+    <div className="flex flex-col min-h-screen pb-20">
       
       
       <main className="flex-grow flex flex-col items-center justify-center text-white">

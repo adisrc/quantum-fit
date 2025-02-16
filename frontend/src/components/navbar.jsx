@@ -1,4 +1,6 @@
 import React from 'react';
+import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/clerk-react";
+
 
 const Navbar = () => {
   return (
@@ -11,18 +13,26 @@ const Navbar = () => {
 
         {/* Navigation */}
         <nav className="hidden md:flex space-x-6">
-          <a href="#" className="text-white hover:text-orange-500 relative">
+          <a href="/" className="text-white hover:text-orange-500 relative">
             HOME
             {/* <span className="absolute left-1/2 transform -translate-x-1/2 bottom-0 block h-1 w-1 bg-orange-500 rounded-full"></span> */}
           </a>
-        <a href="#" className="text-gray-300 hover:text-orange-500">ABOUT</a>
-          <a href="#" className="text-gray-300 hover:text-orange-500">WORKOUTS</a>
+        <a href="/about" className="text-gray-300 hover:text-orange-500">ABOUT</a>
+          <a href="/workout" className="text-gray-300 hover:text-orange-500">WORKOUTS</a>
         </nav>
 
         {/* Button */}
-        <a href="#" className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg">
+        <header>
+      <SignedOut>
+        <SignInButton />
+      </SignedOut>
+      <SignedIn>
+        <UserButton/>
+      </SignedIn>
+    </header>
+        {/* <a href="#" className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg">
            Login/Signup
-        </a>
+        </a> */}
       </div>
     </header>
     </>
