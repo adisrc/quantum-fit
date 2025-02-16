@@ -6,6 +6,9 @@ const MediaPose = () => {
   const canvasRef = useRef(null);
   const [poseLandmarker, setPoseLandmarker] = useState(null);
 
+  //FORMDATA
+  const [workoutType, setWorkoutType] = useState("None");
+
   // State variables for activity counting and feedback
   const [squatCount, setSquatCount] = useState(0);
   const [pushUpCount, setPushUpCount] = useState(0);
@@ -16,8 +19,13 @@ const MediaPose = () => {
   const [crunchState, setCrunchState] = useState("Up");
   const [curlState, setCurlState] = useState("Down");  // State for curl
   const [feedbackMessage, setFeedbackMessage] = useState("Perform your exercises!");
+  useEffect(() => {
+    console.log(workoutType);
+
+  }, [workoutType])
 
   useEffect(() => {
+    
     const initializePoseLandmarker = async () => {
       const vision = await FilesetResolver.forVisionTasks(
         "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision/wasm"
@@ -73,10 +81,10 @@ const MediaPose = () => {
               });
 
               // 🔥 Call activity detection functions
-              detectSquats(landmarks);
-              detectPushUps(landmarks);
-              detectCrunches(landmarks);
-              detectCurls(landmarks);  // Detect curls
+              if(workoutType=='squats')detectSquats(landmarks);
+              if(workoutType=='pushups')detectPushUps(landmarks);
+              if(workoutType=='crunches')detectCrunches(landmarks);
+              if(workoutType=='bicep-curls')detectCurls(landmarks);  // Detect curls
             });
           } else {
             // User not detected
@@ -100,22 +108,28 @@ const MediaPose = () => {
     };
 
     startCamera();
-  }, [poseLandmarker]);
+  }, [poseLandmarker, workoutType]);
 
   // Function to detect squats
-  const detectSquats = (landmarks) => {
-    const hip = landmarks[11]; // Left hip
-    const knee = landmarks[13]; // Left knee
-    const ankle = landmarks[15]; // Left ankle
-
+  const detectSquats = (landmarks) => {    
+    const hip = landmarks[23]; // Left hip
+    const knee = landmarks[25]; // Left knee
+    const ankle = landmarks[27]; // Left ankle
+    console.log(landmarks);
+    
     const angle = calculateAngle(hip, knee, ankle);
 
-    if (angle < 90 && squatState === "Up") {
-      setSquatState("Down"); // Moving down
-    } else if (angle > 160 && squatState === "Down") {
-      setSquatState("Up"); // Moving up
-      setSquatCount((prev) => prev + 1); // Increment squat count
-    }
+    setSquatState((prev) => {
+      
+      if (angle < 90 && prev === "Up" ) {
+          return "Down"; // Update state
+      } else if (angle > 100 && prev === "Down") {
+        setSquatCount(prev=>prev+1); // Increment count
+          return "Up"; // Reset state
+      }        
+      return prev;
+  });
+  
   };
 
   // Function to detect push-ups
@@ -125,32 +139,41 @@ const MediaPose = () => {
     const wrist = landmarks[16]; // Right wrist
 
     const angle = calculateAngle(shoulder, elbow, wrist);
-
-    if (angle < 45 && pushUpState === "Up") {
-      setPushUpState("Down"); // Moving down
-    } else if (angle > 150 && pushUpState === "Down") {
-      setPushUpState("Up"); // Moving up
-      setPushUpCount((prev) => prev + 1); // Increment push-up count
-    }
+ 
+setPushUpState((prev) => {
+  if (angle < 90 && prev === "Up") { 
+    return "Down"; // Detect push-up down position
+  } 
+  else if (angle > 160 && prev === "Down") { 
+    setPushUpCount((prev) => prev + 1); // Increment push-up count
+    return "Up"; // Reset state
+  }
+  return prev;
+}); 
   };
 
-  // Function to detect crunches
   const detectCrunches = (landmarks) => {
     const shoulder = landmarks[11]; // Left shoulder
     const hip = landmarks[24]; // Left hip
-
-    const angle = calculateAngle(shoulder, hip, { x: shoulder.x, y: shoulder.y + 0.1 }); // Reference point above shoulder
-     
-    if (angle < 50 && crunchState === "Up") {
-      setCrunchState("Down"); // Crunch down
-    } else if (angle > 150 && crunchState === "Down") {
-      setCrunchState("Up"); // Crunch up
-      setCrunchCount((prev) => prev + 1); // Increment crunch count
-    }
+    const knee = landmarks[26]; // Left knee
+  
+    // Calculate the angle between shoulder, hip, and knee
+    const angle = calculateAngle(shoulder, hip, knee);
+  
+    setCrunchState((prev) => {
+      if (angle < 90 && prev === "Up") { 
+        return "Down"; // Crunch down
+      } 
+      else if (angle > 100 && prev === "Down") { 
+        setCrunchCount((prev) => prev + 1); // Increment crunch count
+        return "Up"; // Reset state
+      }
+      return prev; // Keep the current state if no change
+    });
   };
 
 // Function to detect bicep curls
-const detectCurls = (landmarks) => {
+const detectCurls = (landmarks) => {  
     const shoulder = landmarks[12]; // Right shoulder
     const elbow = landmarks[14]; // Right elbow
     const wrist = landmarks[16]; // Right wrist
@@ -167,9 +190,7 @@ const detectCurls = (landmarks) => {
             return "Up"; // Update state
         } else if (angle > thresholdDown && prevCurlState === "Up") {
             return "Down"; // Reset state
-        }
-        console.log(prevCurlState);
-        
+        }        
         return prevCurlState; // Keep current state if no change
     });
 };
@@ -186,13 +207,29 @@ const detectCurls = (landmarks) => {
 
   return (
     <div style={{ position: "relative", textAlign: "center" }}>
-      <h2>Squat Count: {squatCount}</h2>
-      <h2>Push-Up Count: {pushUpCount}</h2>
-      <h2>Crunch Count: {crunchCount}</h2>
-      <h2>Bicep Curl Count: {curlCount}</h2>
+      <select onChange={(e) => setWorkoutType(e.target.value)}>
+        <option value="bicep-curls">Bicep Curls</option>
+        <option value="pushups">Push-Ups</option>
+        <option value="squats">Squats</option>
+        <option value="crunches">Crunches</option>
+      </select>
+
+      {workoutType == "squats" && <h2>Squat Count: {squatCount}</h2>}
+      {workoutType == "pushups" && <h2>Push-Up Count: {pushUpCount}</h2>}
+      {workoutType == "crunches" && <h2>Crunch Count: {crunchCount}</h2>}
+      {workoutType == "bicep-curls" && <h2>Bicep Curl Count: {curlCount}</h2>}
       <h3>{feedbackMessage}</h3>
-      <video ref={videoRef} className="input_video" style={{ display: "none" }} />
-      <canvas ref={canvasRef} width={1280} height={720} style={{ width: "100%" }} />
+      <video
+        ref={videoRef}
+        className="input_video"
+        style={{ display: "none" }}
+      />
+      <canvas
+        ref={canvasRef}
+        width={1280}
+        height={720}
+        style={{ width: "100%" }}
+      />
     </div>
   );
 };
