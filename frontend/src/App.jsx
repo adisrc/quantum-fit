@@ -19,13 +19,11 @@ export default function App() {
     <Navbar/>
 
    <div className="mt-20">
-   <Router>
       <Routes>
         <Route path="/" element={<Hero />} />
         <Route path="/workout" element={<Workout />} />
         <Route path="/pose" element={<MediaPose />} />
       </Routes>
-    </Router>
    </div>
 
 </div>
