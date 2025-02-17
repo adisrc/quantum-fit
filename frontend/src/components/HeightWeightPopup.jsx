@@ -1,15 +1,30 @@
 import React, { useState } from "react";
+import { useWorkout } from "../contexts/WorkoutContext";
+import axios from "axios";
+import {  USER_API_END_POINT } from "../utils/constant";
 
 const HeightWeightPopup = ({ isOpen, onClose, onSave }) => {
   const [height, setHeight] = useState("");
   const [weight, setWeight] = useState("");
 
+  const { workoutType, setWorkoutType, isSignedIn, user } = useWorkout();
   if (!isOpen) return null;
 
-  const handleSubmit = () => {
-    onSave({ height, weight });
-    onClose();
-  };
+  const handleSubmit = async () => {
+    try {
+      const response = await axios.post(USER_API_END_POINT+"/api/v1/updateWtHt", {
+        userId: user.id,
+        weight: parseInt(weight, 10),
+        height: parseInt(height, 10),
+      });
+
+      console.log("Data saved successfully:", response.data);
+      onSave({ height, weight });
+      onClose();
+    } catch (error) {
+      console.error("Error saving user data:", error);
+    }
+  }; 
 
   return (
     <div className="fixed inset-0 flex items-center justify-center backdrop-blur-md z-50">
