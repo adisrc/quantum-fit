@@ -63,7 +63,7 @@ const Hero = () => {
           </div>
           <div className="mt-10 w-full flex justify-center">
             {/* section */}
-            <section className="relative w-full  flex items-center justify-center bg-gradient-to-r from-purple-900 via-purple-600 to-orange-400">
+            <section className="relative w-full  flex items-center justify-center bg-gradient-to-r from-purple-500 via-pink-500 to-orange-300">
               <div className="container  mx-auto flex flex-col lg:flex-row items-center justify-between">
 
                 {/* Left Side Content */}
@@ -92,11 +92,11 @@ const Hero = () => {
 
           <div className="relative w-full">
             {/* Image Section */}
-            <div className="relative w-full h-[500px]">
+            <div className="relative w-full h-[700px]">
               <img
-                src="/images/f1.png" // Replace with actual image path
+                src="/images/f3.png" // Replace with actual image path
                 alt="Background"
-                className="w-full h-full "
+                className="w-full h-full object-cover object-bottom "
               />
             </div>
 
@@ -107,7 +107,7 @@ const Hero = () => {
 
             {/* Text Content Section - Ensure it's above the overlay */}
             <div className="relative text-center p-10 z-10">
-              <h2 className="text-3xl font-bold">A PLACE WHERE <span className="text-purple-600">EVERYONE</span> FEELS WELCOME</h2>
+              <h2 className="text-3xl font-bold text-black">A PLACE WHERE <span className="text-purple-600">EVERYONE</span> FEELS WELCOME</h2>
               <p className="mt-4 text-lg text-gray-700">Best value on the planet with tons of equipment and 2,600+ locations.</p>
             </div>
           </div>
@@ -145,40 +145,31 @@ const Hero = () => {
   </button> */}
 
                   {/* BMI Classification Chart (Now Below the Button) */}
-                  <div className="mt-6 w-full flex justify-center lg:justify-start">
-                    <div className="bg-gray-900/90 p-4 rounded-lg shadow-lg text-white text-sm w-full">
-                      <h3 className="text-lg font-semibold text-center mb-2">BMI Categories</h3>
-                      <div className="w-full cursor-default rounded-lg border border-gray-300 overflow-hidden">
-                        <div className="divide-y divide-gray-300">
-                          {/* Underweight */}
-                          <div className="bg-yellow-500/80 text-black p-2 flex justify-between">
-                            <span>Underweight</span>
-                            <span>{"< 18.5"}</span>
-                          </div>
+                  <div className=" m-4 w-full cursor-default rounded-lg  overflow-hidden">
+    {/* Underweight */}
+    <div className="bg-gradient-to-r from-yellow-500 to-yellow-0 font-semibold p-2 flex justify-between">
+      <span>Underweight</span>
+      <span>{"< 18.5"}</span>
+    </div>
 
-                          {/* Normal Weight */}
-                          <div className="bg-green-500/80 text-white p-2 flex justify-between">
-                            <span>Normal Weight</span>
-                            <span>18.5 - 24.9</span>
-                          </div>
+    {/* Normal Weight */}
+    <div className="bg-gradient-to-r from-green-600 to-green-0 font-semibold p-2 flex justify-between">
+      <span>Normal Weight</span>
+      <span>18.5 - 24.9</span>
+    </div>
 
-                          {/* Overweight */}
-                          <div className="bg-orange-500/80 text-black p-2 flex justify-between">
-                            <span>Overweight</span>
-                            <span>25 - 29.9</span>
-                          </div>
+    {/* Overweight */}
+    <div className="bg-gradient-to-r from-orange-500 to-orange-0 font-semibold p-2 flex justify-between">
+      <span>Overweight</span>
+      <span>25 - 29.9</span>
+    </div>
 
-                          {/* Obese */}
-                          <div className="bg-red-600/80 text-white p-2 flex justify-between">
-                            <span>Obese</span>
-                            <span>{"> 30"}</span>
-                          </div>
-                        </div>
-                      </div>
-
-
-                    </div>
-                  </div>
+    {/* Obese */}
+    <div className="bg-gradient-to-r from-red-500 to-red-0 font-semibold p-2 flex justify-between">
+      <span>Obese</span>
+      <span>{"> 30"}</span>
+  </div>
+</div>
                 </div>
 
 
