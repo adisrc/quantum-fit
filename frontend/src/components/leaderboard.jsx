@@ -21,7 +21,7 @@ const Leaderboard = () => {
         {users.map((user) => (
           <div
             key={user.rank}
-            className={`flex items-center w-96 justify-between p-3 rounded-xl bg-gradient-to-r from-gray-800 to-gray-700 hover:from-gray-700 hover:to-gray-600 transition transform hover:scale-105 ${
+            className={`hover:text-white cursor-pointer  flex items-center justify-between p-3 rounded-xl bg-gradient-to-r from-gray-800 to-gray-700 hover:from-gray-700 hover:to-gray-600 transition transform hover:scale-105 ${
               user.rank === 1 ? "bg-gradient-to-r from-yellow-500 to-yellow-200 text-black" : ""
             } ${user.rank === 2 ? "bg-gradient-to-r from-red-300 to-blue-800 text-black" : ""} ${
               user.rank === 3 ? "bg-gradient-to-r from-orange-400 to-orange-100 text-black" : ""}`}
@@ -41,7 +41,7 @@ const Leaderboard = () => {
               >
                 {user.rank}
               </span>
-              <p className="text-lg font-semibold">{user.name}</p>
+              <p className="text-lg font-semibold mr-8">{user.name}</p>
             </div>
 
             {/* Calories Burnt */}

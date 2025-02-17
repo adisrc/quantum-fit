@@ -50,7 +50,7 @@ const Hero = () => {
 
         {/* Call to Action */}
 <div className="text-center mt-3 bg-gradient-to-r from-purple-400 via-pink-500 to-orange-500 bg-clip-text text-transparent text-2xl font-bold">
-          <h1 className="text-6xl font-bold font-serif">Welcome to QuantFit</h1>
+          <h1 className="text-6xl font-bold ">Welcome to QuantFit</h1>
           <p className="mt-2 text-xl font-mono text-black
           ">Join us and start your fitness journey today!</p>
           <button className="mt-2 px-6 py-3 bg-gradient-to-r from-purple-500 to-orange-500 text-white font-semibold rounded-full shadow-lg hover:scale-105 transition">
@@ -59,12 +59,12 @@ const Hero = () => {
         </div>
         <div className="mt-10 w-full flex justify-center">
 {/* section */}
-<section className="relative w-full flex items-center justify-center bg-gradient-to-r from-purple-900 via-purple-600 to-orange-400">
+<section className="relative w-full  flex items-center justify-center bg-gradient-to-r from-purple-900 via-purple-600 to-orange-400">
       <div className="container  mx-auto flex flex-col lg:flex-row items-center justify-between">
         
         {/* Left Side Content */}
         <div className="max-w-lg text-white">
-          <h1 className="text-4xl md:text-7xl font-bold">
+          <h1 className="text-4xl md:text-6xl font-bold">
             Track Your <span className="text-yellow-400">Progress</span> Daily!
           </h1>
           <p className="mt-4 text-xl opacity-80">
