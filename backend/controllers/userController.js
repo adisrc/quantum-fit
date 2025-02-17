@@ -109,6 +109,7 @@ export const updataWtHt = async (req, res)=>{
           return res.status(200).json({
               message: "heights and weights added successfully...",
               success: true,
+              user
           })
        } catch (error) {
          console.log(error)
