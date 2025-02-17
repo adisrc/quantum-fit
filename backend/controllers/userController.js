@@ -2,13 +2,13 @@ import { User } from '../models/userSchema.js'
 
 export const Register = async (req, res)=>{
      try {
-        const {userId} = req.body;
+        const {userId, email} = req.body;
         console.log(req.body)
 
         let user = await User.findOne({userId});
         console.log(user)
         if(!user){ 
-             user =  await User.create( {userId:userId, email:email})
+             user =  await User.create( {userId:userId, email})
         }
         return res.status(200).json({
             message: "user send successfully",
@@ -84,9 +84,28 @@ export const Workout = async (req, res) => {
         // Save updated user data
         await user.save();
 
-        return res.status(200).json({ message: "Workout added successfully", user, success: true });
+        return res.status(200).json({ 
+            message: "Workout added successfully",
+             user,
+              success: true });
     } catch (error) {
         console.error("Error updating workout:", error);
         res.status(500).json({ message: "Internal Server Error", error, success: false });
     }
 };
+export const updataWtHt = async (req, res)=>{
+       console.log(req.body)
+       const {userId, weight, height } = req.body;
+         const user = User.findOne({userId})
+         if(!user){
+            return res.status(401).json({
+                message: "user not found...",
+                success : false
+            })
+         }
+         await User.findByIdAndUpdate(userId, { $pull: { weight: weight, height: height } })
+         return res.status(200).json({
+             message: "heights and weights added successfully...",
+             success: true,
+         })
+}
