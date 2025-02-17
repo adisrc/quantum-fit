@@ -94,18 +94,23 @@ export const Workout = async (req, res) => {
     }
 };
 export const updataWtHt = async (req, res)=>{
-       console.log(req.body)
-       const {userId, weight, height } = req.body;
-         const user = User.findOne({userId})
-         if(!user){
-            return res.status(401).json({
-                message: "user not found...",
-                success : false
-            })
-         }
-         await User.findByIdAndUpdate(userId, { $pull: { weight: weight, height: height } })
-         return res.status(200).json({
-             message: "heights and weights added successfully...",
-             success: true,
-         })
+       try {
+        console.log(req.body)
+        const {userId, weight, height } = req.body;
+          let user = await User.findOne({userId})
+          if(!user){
+             return res.status(401).json({
+                 message: "user not found...",
+                 success : false
+             })
+          }
+         user =  await User.findOneAndUpdate({userId}, { $set: { weight: weight, height: height } })
+         console.log(user)
+          return res.status(200).json({
+              message: "heights and weights added successfully...",
+              success: true,
+          })
+       } catch (error) {
+         console.log(error)
+       }
 }
