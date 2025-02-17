@@ -5,6 +5,7 @@ import Profile from "./components/Profile";
 import Hero from "./pages/Hero";
 import Workout from "./pages/Workout";
 import Navbar from "./components/navbar";
+import Diet from "./components/Diet";
 
 
 
@@ -23,6 +24,8 @@ export default function App() {
         <Route path="/" element={<Hero />} />
         <Route path="/workout" element={<Workout />} />
         <Route path="/pose" element={<MediaPose />} />
+        <Route path="/diet" element={<Diet />} />
+
       </Routes>
    </div>
 
