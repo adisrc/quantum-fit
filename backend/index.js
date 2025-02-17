@@ -3,14 +3,14 @@ import dotenv from 'dotenv'
 import databaseConnection from './config/database.js'
 import userRoute from './routes/userRoute.js'
 import cors from 'cors'
-dotenv.config({path: '.env'})
+dotenv.config({ path: '.env' })
 
 databaseConnection();
 const app = express()
-app.use(express.urlencoded({extended:true}))
+app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
 const corsOptions = {
-    origin:process.env.FRONTEND_URL,
+    origin: process.env.FRONTEND_URL, 
     methods: "GET, POST, PUT, DELETE",
     credentials: true
 }

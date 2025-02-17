@@ -39,20 +39,10 @@ export const WorkoutProvider = ({ children }) => {
     }
   };
 
-  const saveUserData = async (newData) => {
-    try {
-      await axios.put(`http://localhost:3000/api/v1/user/${user.id}`, newData);
-      setUserData((prev) => ({ ...prev, ...newData }));
-      setShowPopup(false);
-    } catch (error) {
-      console.error("Error updating user data:", error);
-    }
-  };
-
   return (
     <WorkoutContext.Provider value={{ workoutType, setWorkoutType, isLoaded, isSignedIn, user, userData }}>
       {children}
-      <HeightWeightPopup isOpen={showPopup} onClose={() => setShowPopup(false)} onSave={saveUserData} />
+      <HeightWeightPopup isOpen={showPopup} onClose={() => setShowPopup(false)}/>
     </WorkoutContext.Provider>
   );
 };
