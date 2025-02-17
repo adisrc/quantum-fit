@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { motion } from "framer-motion"; // For smooth animations
 
 const BMI = () => {
   const [weight, setWeight] = useState("");
@@ -8,7 +9,7 @@ const BMI = () => {
 
   const calculateBMI = () => {
     if (weight && height) {
-      const heightInMeters = height / 100; // Convert cm to meters
+      const heightInMeters = height / 100;
       const bmiValue = (weight / (heightInMeters * heightInMeters)).toFixed(1);
       setBMI(bmiValue);
 
@@ -25,68 +26,67 @@ const BMI = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto mt-10 p-8 bg-gradient-to-r from-gray-900 via-gray-800 to-gray-700 rounded-3xl shadow-xl flex flex-col md:flex-row items-center text-white">
-      {/* Left Side - Input Form */}
-      <div className="w-full md:w-1/2 p-6">
-        <h2 className="text-3xl font-bold mb-4">Calculate Your BMI</h2>
-        <p className="text-gray-300 mb-6">Enter your details to check your BMI.</p>
-        
-        <div className="mb-4">
-          <label className="block text-gray-300 mb-2">Weight (kg)</label>
+    <div className="max-w-3xl mx-auto p-4 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700 rounded-3xl shadow-2xl backdrop-blur-lg border border-gray-600 flex flex-col items-center text-white">
+      {/* Heading */}
+      <h2 className="text-4xl font-bold text-center mb-4">BMI Calculator</h2>
+
+      {/* Form Section */}
+      <div className="w-full flex flex-col gap-6">
+        <div>
+          <label className="block text-gray-300 mb-2 text-lg">Weight (kg)</label>
           <input
             type="number"
             value={weight}
             onChange={(e) => setWeight(e.target.value)}
-            className="w-full p-3 rounded-lg bg-gray-800 border border-gray-600 focus:border-blue-500 outline-none"
+            className="w-full p-3 rounded-xl bg-gray-800 border border-gray-600 focus:ring-2 focus:ring-blue-500 outline-none text-lg"
+            placeholder="Enter your weight"
           />
         </div>
 
-        <div className="mb-4">
-          <label className="block text-gray-300 mb-2">Height (cm)</label>
+        <div>
+          <label className="block text-gray-300 mb-2 text-lg">Height (cm)</label>
           <input
             type="number"
             value={height}
             onChange={(e) => setHeight(e.target.value)}
-            className="w-full p-3 rounded-lg bg-gray-800 border border-gray-600 focus:border-blue-500 outline-none"
+            className="w-full p-3 rounded-xl bg-gray-800 border border-gray-600 focus:ring-2 focus:ring-blue-500 outline-none text-lg"
+            placeholder="Enter your height"
           />
         </div>
 
         <button
           onClick={calculateBMI}
-          className="w-full py-3 mt-4 bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-lg shadow-lg hover:scale-105 transition transform"
+          className="w-full py-3 text-lg font-semibold bg-gradient-to-r from-blue-500 to-cyan-500 rounded-xl shadow-lg hover:scale-105 transition"
         >
           Calculate BMI
         </button>
       </div>
 
-      {/* Right Side - Result Display */}
-      <div className="w-full md:w-1/2 p-6 flex flex-col items-center">
-        <div className="bg-gray-900 p-6 rounded-2xl w-80 text-center shadow-lg">
+      {/* Result Section */}
+      {bmi && (
+        <motion.div 
+          className="mt-8 w-full bg-gray-900 p-6 rounded-2xl text-center shadow-lg border border-gray-600"
+          initial={{ opacity: 0, y: 20 }} 
+          animate={{ opacity: 1, y: 0 }} 
+          transition={{ duration: 0.4 }}
+        >
           <h3 className="text-xl font-semibold mb-3">Your BMI</h3>
-          {bmi ? (
-            <>
-              <p className="text-5xl font-bold">
-                {bmi}
-              </p>
-              <p
-                className={`mt-3 px-4 py-2 rounded-lg text-lg font-semibold ${
-                  category === "Underweight"
-                    ? "bg-yellow-500 text-black"
-                    : category === "Normal weight"
-                    ? "bg-green-500 text-white"
-                    : category === "Overweight"
-                    ? "bg-orange-500 text-black"
-                    : "bg-red-600 text-white"
-                }`}
-              >
-                {category}
-              </p>
-            </>
-          ) : (
-            <p className="text-gray-400">Enter your details to see the result</p>
-          )}
-        </div>
-      </div>
+          <p className="text-5xl font-bold">{bmi}</p>
+          <p
+            className={`mt-4 px-6 py-3 rounded-xl text-lg font-semibold ${
+              category === "Underweight"
+                ? "bg-yellow-500 text-black"
+                : category === "Normal weight"
+                ? "bg-green-500 text-white"
+                : category === "Overweight"
+                ? "bg-orange-500 text-black"
+                : "bg-red-600 text-white"
+            }`}
+          >
+            {category}
+          </p>
+        </motion.div>
+      )}
     </div>
   );
 };
