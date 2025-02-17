@@ -10,13 +10,22 @@ const HeightWeightPopup = ({ isOpen, onClose, onSave }) => {
   const { workoutType, setWorkoutType, isSignedIn, user } = useWorkout();
   if (!isOpen) return null;
 
-  const handleSubmit = async () => {
+  const handleSubmit = async () => {    
+    console.log(user.id, weight, height);
+    
     try {
-      const response = await axios.post(USER_API_END_POINT+"/api/v1/updateWtHt", {
+      const response = await axios.post(`${USER_API_END_POINT}/updateWtHt`, {
         userId: user.id,
         weight: parseInt(weight, 10),
         height: parseInt(height, 10),
-      });
+      },
+      {
+        headers:{
+            'Content-Type':'application/json',
+        } ,
+         withCredentials : true
+     }
+    );
 
       console.log("Data saved successfully:", response.data);
       onSave({ height, weight });
