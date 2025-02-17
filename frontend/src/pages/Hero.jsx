@@ -4,6 +4,7 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Leaderboard from "../components/leaderboard";
+import BMI from "../components/BMI";
 
 const Hero = () => {
   const images = [
@@ -59,7 +60,7 @@ const Hero = () => {
         </div>
         <div className="mt-10 w-full flex justify-center">
 {/* section */}
-<section className="relative w-full flex items-center justify-center bg-gradient-to-r from-purple-900 via-purple-600 to-orange-400">
+<section className="relative  w-full flex items-center justify-center bg-gradient-to-r from-purple-900 via-purple-600 to-orange-400">
       <div className="container  mx-auto flex flex-col lg:flex-row items-center justify-between">
         
         {/* Left Side Content */}
@@ -83,8 +84,34 @@ const Hero = () => {
 
       </div>
     </section>
+    
   </div>
+  <div className="mt-10 w-full flex justify-center">
+  <section className="relative w-full flex items-center justify-center bg-gradient-to-r from-purple-900 via-purple-600 to-orange-400">
+  <div className="container mx-auto flex flex-col lg:flex-row items-center justify-between">
+    
+    {/* Left Side - BMI Form */}
+    <div className="relative m-4 bg-white/10 rounded-3xl p-6 shadow-lg backdrop-blur-lg w-full lg:w-1/2">
+      <BMI />
+    </div>
 
+    {/* Right Side - Text Content */}
+    <div className="max-w-lg text-white text-center lg:text-left lg:ml-10">
+      <h1 className="text-4xl md:text-7xl font-bold">
+        Track Your <span className="text-yellow-400">Progress</span> Daily!
+      </h1>
+      <p className="mt-4 text-xl opacity-80">
+        Stay motivated and challenge yourself with our daily leaderboard.
+        Compete with your friends and push your limits!
+      </p>
+      <button className="mt-6 px-6 py-3 bg-gradient-to-r from-purple-500 to-orange-500 text-white font-semibold rounded-full shadow-lg hover:scale-105 transition">
+        Join the Competition
+      </button>
+    </div>
+
+  </div>
+</section>
+</div>
       </main>
 
       
