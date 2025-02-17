@@ -10,7 +10,7 @@ const app = express()
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
 const corsOptions = {
-    origin: "*", //process.env.FRONTEND_URL, 
+    origin: process.env.FRONTEND_URL, 
     methods: "GET, POST, PUT, DELETE",
     credentials: true
 }

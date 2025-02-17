@@ -49,24 +49,20 @@ export const Workout = async (req, res) => {
         const { userId, workoutType, reps, duration } = req.body;
         console.log("Received Workout Data:", req.body);
 
-        // Find user by userId
         let user = await User.findOne({ userId });
 
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
 
-        // Create new workout session
+        // Creating a new workout session
         const newWorkout = {
             workoutType,
             reps,
             duration,
         };
+       user.workouts.push(newWorkout);
 
-        // Add to user's workouts
-        user.workouts.push(newWorkout);
-
-        // Update total reps
         user.totalReps += reps;
 
         // Update streak (if this is a new day)
@@ -81,7 +77,6 @@ export const Workout = async (req, res) => {
             user.bestPerformance = { workoutType, reps };
         }
 
-        // Save updated user data
         await user.save();
 
         return res.status(200).json({ 
@@ -114,3 +109,38 @@ export const updataWtHt = async (req, res)=>{
          console.log(error)
        }
 }
+
+export const getWorkoutByType = async (req, res) => {
+    try {
+        const { userId, workoutType } = req.body; 
+
+        const user = await User.findOne({ userId });
+        if (!user) {
+            return res.status(404).json({
+                message: "User not found",
+                success: false
+            });
+        }
+
+        const workout = user.workouts.filter(w => w.workoutType === workoutType);
+        if (workout.length === 0) {
+            return res.status(404).json({
+                message: "Workout not found",
+                success: false
+            });
+        }
+        return res.status(200).json({
+            message: `${workoutType} workout found`,
+            success: true,
+            workout
+        });
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            message: "Internal Server Error",
+            success: false,
+            error: error.message
+        });
+    }
+};
