@@ -14,8 +14,8 @@ const exercises = [
   {
     id: 2,
     name: "Squats",
-    image: "../images/feature2.png",
-    video: "../videos/pushup.mp4",
+    image: "../images/squats.png",
+    video: "../videos/squats.mp4",
   },
   {
     id: 3,
