@@ -28,6 +28,12 @@ const userSchema = new mongoose.Schema(
         type: String,
         unique: true,
       },
+      height:{
+        type:Number
+      },
+      weight:{
+        type:Number
+      },
       workouts: [WorkoutSchema], // Array of workout sessions
       totalReps: {
         type: Number,

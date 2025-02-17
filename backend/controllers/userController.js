@@ -66,3 +66,16 @@ export const Workout = async (req, res) => {
         res.status(500).json({ message: "Internal Server Error", error, success: false });
     }
 };
+export const updataWtHt = async (req, res)=>{
+       console.log(req)
+       const {userId, weight, height } = req.body;
+         const user = User.findOne({userId})
+         if(!user){
+            return res.status(401).json({
+                message: "user not found",
+                success : false
+            })
+         }
+         
+
+}
