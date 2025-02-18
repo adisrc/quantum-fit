@@ -2,7 +2,7 @@ import React, { useRef, useEffect, useState } from "react";
 import { FilesetResolver, PoseLandmarker } from "@mediapipe/tasks-vision";
 import { useLocation } from "react-router-dom";
 import { useWorkout } from "../contexts/WorkoutContext";
-import { USER_API_END_POINT } from "../utils/constant"
+import { USER_API_END_POINT } from "../utils/constant";
 import axios from "axios";
 import Footer from "./footer";
 
@@ -34,7 +34,6 @@ const MediaPose = () => {
     "Perform your exercises!"
   );
   const [isError, setIsError] = useState(false);
-
 
   useEffect(() => {
     if (location.state?.exerciseName) {
@@ -132,9 +131,8 @@ const MediaPose = () => {
             // User not detected
             setFeedbackMessage("Please make sure you're visible in the frame.");
             // Optionally, you could also set a state for error detection to dynamically adjust the styling
-            setIsError(true);  // Add a state to manage error styling
+            setIsError(true); // Add a state to manage error styling
           }
-
         }
         requestAnimationFrame(processFrame);
       };
@@ -305,114 +303,124 @@ const MediaPose = () => {
 
   return (
     <>
-    
-    <div className="bg-gradient-to-bl from-gray-600 to-gray-900">
-      <div className="text-center flex flex-col">
-      <div className="flex flex-row">
-        <video ref={videoRef} className="input_video" hidden />
-        {
-          <canvas
-            ref={canvasRef}
-            className=" h-[600px] w-[800px] m-4 border-2 border-green-200 rounded-xl mx-auto"
-          />
-        }
+      <div className="bg-gradient-to-bl from-gray-600 to-gray-900">
+        <div className="text-center flex flex-col">
+          <div className="flex flex-col md:flex-row gap-2 m-2">
+            <video ref={videoRef} className="input_video" hidden />
+            {
+              <canvas
+                ref={canvasRef}
+                className="w-full max-w-[800px] h-auto aspect-[4/3] m-4 border-2 border-green-200 rounded-xl mx-auto"
+              />
+            }
 
-<div className="relative m-auto  bg-gradient-to-r from-gray-200 via-gray-400 to-gray-600  rounded-3xl p-6 shadow-2xl backdrop-blur-lg">
-          <form onSubmit={handleSubmit} className="my-4 mx-8">
-            <select
-  className="bg-gradient-to-r from-gray-800 to-blue-900 text-white font-bold text-lg py-3 px-6 rounded-lg "
-  value={workoutType}
-              onChange={(e) => setWorkoutType(e.target.value)}
-            >
-              <option className="bg-black" value="Bicep Curls">Bicep Curls</option>
-              <option className="bg-black" value="Push Ups">Push-Ups</option>
-              <option className="bg-black" value="Squats">Squats</option>
-              <option className="bg-black" value="Crunches">Crunches</option>
-            </select>
+            <div className="relative m-auto  bg-gradient-to-r from-gray-200 via-gray-400 to-gray-600  rounded-3xl p-6 shadow-2xl backdrop-blur-lg">
+              <form onSubmit={handleSubmit} className="my-4 mx-8">
+                <select
+                  className="bg-gradient-to-r from-gray-800 to-yellow-text-yellow-200 text-white font-bold text-lg py-3 px-6 rounded-lg "
+                  value={workoutType}
+                  onChange={(e) => setWorkoutType(e.target.value)}
+                >
+                  <option className="bg-black" value="Bicep Curls">
+                    Bicep Curls
+                  </option>
+                  <option className="bg-black" value="Push Ups">
+                    Push-Ups
+                  </option>
+                  <option className="bg-black" value="Squats">
+                    Squats
+                  </option>
+                  <option className="bg-black" value="Crunches">
+                    Crunches
+                  </option>
+                </select>
 
+                <h2 className="text-2xl font-semibold text-gray-800 dark:text-black mb-4">
+                  Workout Time:{" "}
+                  <span
+                    className={`font-bold ${
+                      elapsedTime ? "text-green-500" : "text-yellow-200"
+                    }`}
+                  >
+                    {elapsedTime ? `${elapsedTime.toFixed(2)} seconds` : "N/A"}
+                  </span>
+                </h2>
 
-            <h2 className="text-2xl font-semibold text-gray-800 dark:text-black mb-4">
-              Workout Time:{" "}
-              <span className={`font-bold ${elapsedTime ? 'text-green-500' : 'text-red-500'}`}>
-                {elapsedTime ? `${elapsedTime.toFixed(2)} seconds` : "N/A"}
-              </span>
-            </h2>
+                {workoutType == "Squats" && (
+                  <h2 className="text-2xl font-semibold text-gray-800 dark:text-black mb-4">
+                    Squat Count:{" "}
+                    <span className="text-yellow-200 font-bold text-2xl">
+                      {squatCount}
+                    </span>
+                  </h2>
+                )}
 
-            {workoutType == "Squats" && (
-              <h2 className="text-2xl font-semibold text-gray-800 dark:text-black mb-4">
-                Squat Count:{" "}
-                <span className="text-blue-900 font-bold text-2xl">{squatCount}</span>
-              </h2>
-            )}
+                {workoutType == "Push Ups" && (
+                  <h2 className="text-2xl font-semibold text-gray-800 dark:text-black mb-4">
+                    Push-Up Count:{" "}
+                    <span className="text-yellow-200 font-bold text-2xl">
+                      {pushUpCount}
+                    </span>
+                  </h2>
+                )}
 
-            {workoutType == "Push Ups" && (
-              <h2 className="text-2xl font-semibold text-gray-800 dark:text-black mb-4">
-                Push-Up Count:{" "}
-                <span className="text-blue-900 font-bold text-2xl">{pushUpCount}</span>
-              </h2>
-            )}
+                {workoutType == "Crunches" && (
+                  <h2 className="text-2xl font-semibold text-gray-800 dark:text-black mb-4">
+                    Crunch Count:{" "}
+                    <span className="text-yellow-200 font-bold text-2xl">
+                      {crunchCount}
+                    </span>
+                  </h2>
+                )}
 
-            {workoutType == "Crunches" && (
-              <h2 className="text-2xl font-semibold text-gray-800 dark:text-black mb-4">
-                Crunch Count:{" "}
-                <span className="text-blue-900 font-bold text-2xl">{crunchCount}</span>
-              </h2>
-            )}
+                {workoutType == "Bicep Curls" && (
+                  <h2 className="text-2xl font-semibold text-gray-800 dark:text-black mb-4">
+                    Bicep Curl Count:{" "}
+                    <span className="text-yellow-200 font-bold text-2xl">
+                      {curlCount}
+                    </span>
+                  </h2>
+                )}
 
-            {workoutType == "Bicep Curls" && (
-              <h2 className="text-2xl font-semibold text-gray-800 dark:text-black mb-4">
-                Bicep Curl Count:{" "}
-                <span className="text-blue-900 font-bold text-2xl">{curlCount}</span>
-              </h2>
-            )}
-
-            <h3
-              className={`text-xl font-semibold mt-4 p-4 rounded-lg border-2 border-solid ${isError ? "text-black  border-red-500 bg-red-500" : "text-white border-green-500 bg-green-500"
-                } bg-opacity-20 w-full max-w-xs`}
-            >
-              {feedbackMessage}
-            </h3>
-
-
-          </form>
-          <div className="">
-      {!poseLandmarker ? (
-        <button
-          onClick={() => setStartClick(true)}
-          className="w-auto mx-auto border-2 border-blue-500 bg-blue-500 text-white rounded-full px-6 py-3 text-lg font-semibold hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300 transition duration-300"
-        >
-          Start
-        </button>
-      ) : (
-        <button
-          onClick={handleSubmit}
-          className="w-[100px] mx-auto border-2 border-red-500 bg-red-500 text-white rounded-full px-6 py-3 text-lg font-semibold hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-300 transition duration-300"
-        >
-          End
-        </button>
-      )}{" "}
-      </div>
+                <h3
+                  className={`text-lg font-semibold mt-4 p-4 rounded-xl border-2 ${
+                    isError
+                      ? "border-red-500 bg-gradient-to-r from-red-500 to-red-700 text-white"
+                      : "border-green-500 bg-gradient-to-r from-green-500 to-green-700 text-white"
+                  } shadow-lg w-full max-w-sm text-center`}
+                >
+                  {feedbackMessage}
+                </h3>
+              </form>
+              {!poseLandmarker ? (
+                <button
+                  onClick={() => setStartClick(true)}
+                  className="w-auto mx-auto bg-gradient-to-r from-blue-500 to-indigo-600 text-white border-none rounded-full px-8 py-3 text-lg font-semibold shadow-lg hover:from-blue-600 hover:to-indigo-700 focus:outline-none focus:ring-4 focus:ring-indigo-300 transition-all duration-300"
+                >
+                  Start
+                </button>
+              ) : (
+                <button
+                  onClick={handleSubmit}
+                  className="w-[120px] mx-auto bg-gradient-to-r from-red-500 to-pink-600 text-white border-none rounded-full px-8 py-3 text-lg font-semibold shadow-lg hover:from-red-600 hover:to-pink-700 focus:outline-none focus:ring-4 focus:ring-pink-300 transition-all duration-300"
+                >
+                  End
+                </button>
+              )}
+            </div>
+          </div>
         </div>
-
-
       </div>
-      
-      
-    </div>
-    </div>
-    <Footer />
+      <Footer />
     </>
   );
 };
 
 export default MediaPose;
 
-
-
 // if (pose.landmarks && pose.score > 0.8) { // Adjust threshold
 //   count += 1;
 // }
-
 
 // import cv from '@techstark/opencv-js';
 
@@ -430,7 +438,6 @@ export default MediaPose;
 //   return;
 // }
 
-
 // let lastDetectionTime = 0;
 // const detectionCooldown = 2000; // 2 seconds
 
@@ -447,7 +454,6 @@ export default MediaPose;
 // if (pose.landmarks && shouldCountPose()) {
 //     count += 1;
 // }
-
 
 // let visibleLandmarks = pose.landmarks.filter(lm => lm.visibility > 0.5);
 // if (visibleLandmarks.length > 10) {  // Adjust threshold

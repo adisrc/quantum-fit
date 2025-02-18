@@ -5,6 +5,8 @@ import Profile from "./components/Profile";
 import Hero from "./pages/Hero";
 import Workout from "./pages/Workout";
 import Navbar from "./components/navbar";
+import DietSuggestionPage from "./components/diet";
+import AboutSection from "./pages/About";
 
 
 
@@ -12,19 +14,17 @@ import Navbar from "./components/navbar";
 export default function App() {
   return (
 <div>
+    <Navbar/> 
+    <div className="bg-gradient-to-r from-gray-900 via-gray-700 to-gray-900 h-19">
+    </div>
 
-     
-    
-    {/* <MediaPose/> */}
-    <Navbar/>
-
-   <div className="mt-20">
       <Routes>
         <Route path="/" element={<Hero />} />
         <Route path="/workout" element={<Workout />} />
         <Route path="/pose" element={<MediaPose />} />
+        <Route path="/diet" element={<DietSuggestionPage/>} />
+        <Route path="/about" element={<AboutSection/>} />
       </Routes>
-   </div>
 
 </div>
   );
