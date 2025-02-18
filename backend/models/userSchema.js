@@ -3,14 +3,14 @@ import mongoose from "mongoose";
 const WorkoutSchema = new mongoose.Schema({
   workoutType: {
     type: String,
-    required: true, // Example: "Push-ups", "Squats"
+    required: true, 
   },
   reps: {
     type: Number,
-    required: true, // Count detected by AI
+    required: true, 
   },
   duration: {
-    type: Number, // Time spent on workout (in seconds)
+    type: Number, 
   },
   timestamp: {
     type: Date,
@@ -26,21 +26,26 @@ const userSchema = new mongoose.Schema(
       },
       email: {
         type: String,
-        required: true,
         unique: true,
       },
-      workouts: [WorkoutSchema], // Array of workout sessions
+      height:{
+        type:Number
+      },
+      weight:{
+        type:Number
+      },
+      workouts: [WorkoutSchema],
       totalReps: {
         type: Number,
-        default: 0, // Sum of all reps
+        default: 0, 
       },
       streak: {
         type: Number,
-        default: 0, // Consecutive days of workouts
+        default: 0, 
       },
       bestPerformance: {
-        workoutType: String, // Best exercise (e.g., "Push-ups")
-        reps: Number, // Max reps in one session
+        workoutType: String, 
+        reps: Number, 
       },
     },
     {timestamps: true}
