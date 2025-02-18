@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import { useUser } from "@clerk/clerk-react";
 import axios from "axios";
 import HeightWeightPopup from '../components/HeightWeightPopup'
+import { USER_API_END_POINT } from "../utils/constant";
 
 const WorkoutContext = createContext();
 
@@ -20,7 +21,7 @@ export const WorkoutProvider = ({ children }) => {
   const getUserData = async () => {
     if (user) {
       try {
-        const response = await axios.post("http://localhost:3000/api/v1/user", {
+        const response = await axios.post(`${USER_API_END_POINT}/user`, {
           userId: user.id,
           email: user.primaryEmailAddress?.emailAddress,
         });
