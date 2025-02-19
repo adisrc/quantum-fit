@@ -81,7 +81,7 @@ export const Workout = async (req, res) => {
         }
 
         await user.save();
-
+     console.log("user")
         return res.status(200).json({ 
             message: "Workout added successfully",
              user,
