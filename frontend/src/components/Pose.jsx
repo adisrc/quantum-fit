@@ -338,12 +338,19 @@ const MediaPose = () => {
                 <h2 className="text-2xl font-semibold text-gray-800 dark:text-black mb-4">
                   Workout Time:{" "}
                   <span
-                    className={`font-bold ${
-                      elapsedTime ? "text-green-500" : "text-yellow-200"
-                    }`}
-                  >
-                    {elapsedTime ? `${elapsedTime.toFixed(2)} seconds` : "N/A"}
-                  </span>
+  className={`font-bold text-lg ${
+    elapsedTime
+      ? "text-green-500 bg-green-100 px-2 py-1 rounded"
+      : "text-yellow-500 bg-yellow-100 px-2 py-1 rounded"
+  }`}
+>
+  {elapsedTime
+    ? elapsedTime >= 60
+      ? `${Math.floor(elapsedTime / 60)} min ${Math.floor(elapsedTime % 60)} sec`
+      : `${elapsedTime.toFixed(2)} sec`
+    : "N/A"}
+</span>
+
                 </h2>
 
                 {workoutType == "Squats" && (
