@@ -28,7 +28,7 @@ export const WorkoutProvider = ({ children }) => {
 
         if (response.data.success) {
           setUserData(response.data.user);
-           console.log(response.data.user);
+           console.log(response.data);
            
           // Check if weight and height are missing
           if (!response.data.user.height || !response.data.user.weight) {
