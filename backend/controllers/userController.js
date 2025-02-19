@@ -10,9 +10,12 @@ export const Register = async (req, res)=>{
         if(!user){ 
              user =  await User.create( {userId:userId, email})
         }
+        let otherUser = await User.find({});
+        
         return res.status(200).json({
             message: "user send successfully",
             user,
+            otherUser,
             success: true
         })
 
