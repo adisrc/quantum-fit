@@ -1,2 +1,2 @@
-export const USER_API_END_POINT = import.meta.env.VITE_USER_API_END_POINT || "http://quant-fit-backend.vercel.app/api/v1";
+export const USER_API_END_POINT = "http://localhost:4000/api/v1";
 
