@@ -1,0 +1,518 @@
+import React, { useRef, useEffect, useState } from "react";
+import { FilesetResolver, PoseLandmarker } from "@mediapipe/tasks-vision";
+import { useLocation } from "react-router-dom";
+import { useWorkout } from "../contexts/WorkoutContext";
+import { USER_API_END_POINT } from "../utils/constant";
+import axios from "axios";
+import Footer from "./footer";
+
+const Challenge = () => {
+  const location = useLocation();
+  const videoRef = useRef(null);
+  const canvasRef = useRef(null);
+  const [poseLandmarker, setPoseLandmarker] = useState(null);
+  const [startClick, setStartClick] = useState(false);
+  const [timeStamp, setTimeStamp] = useState("");
+  const [duration, setDuration] = useState();
+  const [startTime, setStartTime] = useState(null); // To store the start time
+  const [elapsedTime, setElapsedTime] = useState(0); // To store the elapsed time
+
+  //FORMDATA
+  // const [workoutType, setWorkoutType] = useState("None");
+  const { workoutType, setWorkoutType, isSignedIn, user } = useWorkout();
+
+  // State variables for activity counting and feedback
+  const [squatCount, setSquatCount] = useState(0);
+  const [pushUpCount, setPushUpCount] = useState(0);
+  const [crunchCount, setCrunchCount] = useState(0);
+  const [curlCount, setCurlCount] = useState(0); // Bicep curl counter
+  const [shoulderPressCount, setShoulderPressCount] = useState(0); // Bicep curl counter
+  const [mountainClimberCount, setMountainClimberCount] = useState(0); //Mountain Climber counter
+
+  const [squatState, setSquatState] = useState("Up");
+  const [pushUpState, setPushUpState] = useState("Up");
+  const [crunchState, setCrunchState] = useState("Up");
+  const [curlState, setCurlState] = useState("Down"); // State for curl
+  const [shoulderPressState, setShoulderPressState] = useState("Down"); // State for curl, 
+  const [mountainClimberState, setMountainClimberState] = useState("In") // state for Mountain Climber
+  const [feedbackMessage, setFeedbackMessage] = useState(
+    ""
+  );
+  const [isError, setIsError] = useState(false);
+
+  const speakMessage = (message) => {
+    const synth = window.speechSynthesis; 
+    const utterance = new SpeechSynthesisUtterance(message);
+    synth.speak(utterance);
+  };
+  useEffect(() => {
+    if (feedbackMessage) {
+      speakMessage(feedbackMessage);
+    }
+  }, [feedbackMessage]);
+
+  useEffect(() => {
+    if (location.state?.exerciseName) {
+      setWorkoutType(location.state.exerciseName);
+      console.log(workoutType);
+    }
+  }, [location]);
+
+
+
+
+  useEffect(() => {
+    let timer;
+    if (startClick) {
+      const initializePoseLandmarker = async () => {
+        const vision = await FilesetResolver.forVisionTasks(
+          "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision/wasm"
+        );
+
+        const landmarker = await PoseLandmarker.createFromOptions(vision, {
+          baseOptions: {
+            modelAssetPath:
+              "https://storage.googleapis.com/mediapipe-assets/pose_landmarker.task",
+            delegate: "GPU",
+          },
+          runningMode: "VIDEO",
+          numPoses: 1,
+        });
+
+        setPoseLandmarker(landmarker);
+        setStartTime(Date.now()); // Record the start time when workout begins
+      };
+    //Change for 10 minutes
+      timer = setTimeout(() => {
+        handleSubmit();
+      }, 10000);
+
+      initializePoseLandmarker();
+    }
+  }, [startClick]);
+
+  useEffect(() => {
+    if (!poseLandmarker) return;
+
+    const videoElement = videoRef.current;
+    const canvasElement = canvasRef.current;
+    const canvasCtx = canvasElement.getContext("2d");
+
+    const detectPose = async () => {
+      if (!poseLandmarker || !videoElement) return;
+
+      // Set canvas size based on video dimensions
+      canvasElement.width = videoElement.videoWidth;
+      canvasElement.height = videoElement.videoHeight;
+
+      const processFrame = async () => {
+        if (!videoElement.paused && !videoElement.ended) {
+          const results = await poseLandmarker.detectForVideo(
+            videoElement,
+            performance.now()
+          );
+
+          if (results.landmarks.length > 0) {
+            // User detected in frame
+            setFeedbackMessage("Great job! Keep going!");
+            setIsError(false);
+            canvasCtx.clearRect(
+              0,
+              0,
+              canvasElement.width,
+              canvasElement.height
+            );
+            canvasCtx.drawImage(
+              videoElement,
+              0,
+              0,
+              canvasElement.width,
+              canvasElement.height
+            );
+
+            results.landmarks.forEach((landmarks) => {
+              // Draw landmarks
+              landmarks.forEach((point) => {
+                canvasCtx.beginPath();
+                canvasCtx.arc(
+                  point.x * canvasElement.width,
+                  point.y * canvasElement.height,
+                  5,
+                  0,
+                  2 * Math.PI
+                );
+                canvasCtx.fillStyle = "red";
+                canvasCtx.fill();
+              });
+
+              // 🔥 Call activity detection functions
+              if (workoutType == "Squats") detectSquats(landmarks);
+              if (workoutType == "Push Ups") detectPushUps(landmarks);
+              if (workoutType == "Crunches") detectCrunches(landmarks);
+              if (workoutType == "Bicep Curls") detectCurls(landmarks);
+              if (workoutType == "Shoulder Press") detectShoulderPress(landmarks);
+              if (workoutType == "Mountain Climbers") detectMountainClimbers(landmarks);
+
+              
+
+            });
+          } else {
+            // User not detected
+            setFeedbackMessage("Please make sure you're visible in the frame.");
+            // Optionally, you could also set a state for error detection to dynamically adjust the styling
+            setIsError(true); // Add a state to manage error styling
+          }
+        }
+        requestAnimationFrame(processFrame);
+      };
+
+      requestAnimationFrame(processFrame);
+    };
+
+    const startCamera = async () => {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      videoElement.srcObject = stream;
+      videoElement.onloadedmetadata = () => {
+        videoElement.play();
+        detectPose();
+      };
+    };
+
+    startCamera();
+  }, [poseLandmarker, workoutType]);
+
+  // HANDLE SUBMIT
+
+  const handleSubmit = async (e) => {
+    if(e)
+    e.preventDefault();
+    // Stop the camera stream
+    if (videoRef.current && videoRef.current.srcObject) {
+      const stream = videoRef.current.srcObject;
+      const tracks = stream.getTracks();
+      tracks.forEach((track) => track.stop()); // Stop each track
+      videoRef.current.srcObject = null; // Clear the source object
+    }
+
+    // Clear the PoseLandmarker
+    setPoseLandmarker(null);
+    setStartClick(false);
+
+    const endTime = Date.now(); // Capture the time when the workout ends
+    const duration = (endTime - startTime) / 1000; // Calculate elapsed time in seconds
+    setElapsedTime(duration); // Update elapsed time state
+
+    // Log the workout data
+    let reps;
+    switch (workoutType) {
+      case "Squats":
+        reps = squatCount;
+        break;
+      case "Bicep Curls":
+        reps = curlCount;
+        break;
+      case "Push Ups":
+        reps = pushUpCount;
+        break;
+      case "Crunches":
+        reps = crunchCount;
+        break;
+      case "Shoulder Press":
+        reps = shoulderPressCount;
+        break;
+      default:
+        reps = 0;
+        console.warn("Unknown workout type:", workoutType);
+    }
+    const response = await axios.post(
+      `${USER_API_END_POINT}/workout`,
+      {
+        username:user.fullName,
+        userId: user.id,
+        workoutType,
+        duration,
+        reps,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      }
+    );
+
+    console.log(reps, workoutType, duration);
+    console.log(response.data);
+  };
+
+  // Function to detect squats
+  const detectSquats = (landmarks) => {
+    const hip = landmarks[23]; // Left hip
+    const knee = landmarks[25]; // Left knee
+    const ankle = landmarks[27]; // Left ankle
+    // console.log(landmarks);
+
+    const angle = calculateAngle(hip, knee, ankle);
+
+    setSquatState((prev) => {
+      if (angle < 90 && prev === "Up") {
+        return "Down"; // Update state
+      } else if (angle > 100 && prev === "Down") {
+        setSquatCount((prev) => prev + 1); // Increment count
+        return "Up"; // Reset state
+      }
+      return prev;
+    });
+  };
+
+  const detectShoulderPress = (landmarks) => {
+    const shoulder = landmarks[11]; // Left shoulder
+    const elbow = landmarks[13]; // Left elbow
+    const wrist = landmarks[15]; // Left wrist
+
+    const angle = calculateAngle(shoulder, elbow, wrist);
+
+    setShoulderPressState((prev) => {
+      if (angle > 160 && prev === "Down") {
+        return "Up"; // Arms fully extended
+      } else if (angle < 60 && prev === "Up") {
+        setShoulderPressCount((prev) => prev + 1); // Increment count when arms lower
+        return "Down"; // Arms bent (returning down)
+      }
+      return prev;
+    });
+  };
+
+
+  // Function to detect push-ups
+  const detectPushUps = (landmarks) => {
+    const shoulder = landmarks[12]; // Right shoulder
+    const elbow = landmarks[14]; // Right elbow
+    const wrist = landmarks[16]; // Right wrist
+
+    const angle = calculateAngle(shoulder, elbow, wrist);
+
+    setPushUpState((prev) => {
+      if (angle < 90 && prev === "Up") {
+        return "Down"; // Detect push-up down position
+      } else if (angle > 160 && prev === "Down") {
+        setPushUpCount((prev) => prev + 1); // Increment push-up count
+        return "Up"; // Reset state
+      }
+      return prev;
+    });
+  };
+
+  const detectCrunches = (landmarks) => {
+    const shoulder = landmarks[11]; // Left shoulder
+    const hip = landmarks[24]; // Left hip
+    const knee = landmarks[26]; // Left knee
+
+    // Calculate the angle between shoulder, hip, and knee
+    const angle = calculateAngle(shoulder, hip, knee);
+
+    setCrunchState((prev) => {
+      if (angle < 90 && prev === "Up") {
+        return "Down"; // Crunch down
+      } else if (angle > 100 && prev === "Down") {
+        setCrunchCount((prev) => prev + 1); // Increment crunch count
+        return "Up"; // Reset state
+      }
+      return prev; // Keep the current state if no change
+    });
+  };
+
+  // Function to detect bicep curls
+  const detectCurls = (landmarks) => {
+    const shoulder = landmarks[12]; // Right shoulder
+    const elbow = landmarks[14]; // Right elbow
+    const wrist = landmarks[16]; // Right wrist
+
+    const angle = calculateAngle(shoulder, elbow, wrist);
+
+    const thresholdUp = 50;
+    const thresholdDown = 100;
+    //console.log(angle,      curlState);
+
+    setCurlState((prevCurlState) => {
+      if (angle < thresholdUp && prevCurlState === "Down") {
+        setCurlCount((prev) => prev + 1); // Increment count
+        return "Up"; // Update state
+      } else if (angle > thresholdDown && prevCurlState === "Up") {
+        return "Down"; // Reset state
+      }
+      return prevCurlState; // Keep current state if no change
+    });
+  };
+
+  // Function to detect Mountin Climbers
+  const detectMountainClimbers = (landmarks) => {
+    const hip = landmarks[24];    // Right hip
+    const knee = landmarks[26];   // Right knee
+    const ankle = landmarks[28];  // Right ankle
+
+    const angle = calculateAngle(hip, knee, ankle);
+
+    setMountainClimberState((prev) => {
+      if (angle < 90 && prev === "Out") {
+        return "In"; // Detect push-up down position
+      } else if (angle > 160 && prev === "In") {
+        setMountainClimberCount((prev) => prev + 1); // Increment push-up count
+        return "Out"; // Reset state
+      }
+      return prev;
+    });
+  };
+  // Function to calculate angle between three points
+  const calculateAngle = (A, B, C) => {
+    const radians =
+      Math.atan2(C.y - B.y, C.x - B.x) - Math.atan2(A.y - B.y, A.x - B.x);
+    let angle = Math.abs((radians * 180.0) / Math.PI);
+    if (angle > 180) angle = 360 - angle;
+    return angle;
+  };
+
+  return (
+    <>
+      <div className="bg-gradient-to-bl from-gray-600 to-gray-900">
+        <div className="text-center flex flex-col">
+          <div className="flex flex-col md:flex-row gap-2 m-2">
+            <video ref={videoRef} className="input_video" hidden />
+            {
+              <canvas
+                ref={canvasRef}
+                className="w-full max-w-[800px] h-auto aspect-[4/3] m-4 border-2 border-green-200 rounded-xl mx-auto"
+              />
+            }
+
+            <div className="relative m-auto  bg-gradient-to-r from-gray-200 via-gray-400 to-gray-600  rounded-3xl p-6 shadow-2xl backdrop-blur-lg">
+              <form onSubmit={handleSubmit} className="my-4 mx-8">
+                <select
+                  className="bg-gradient-to-r from-gray-800 to-yellow-text-yellow-200 text-white font-bold text-lg py-3 px-6 rounded-lg "
+                  value={workoutType}
+                  onChange={(e) => setWorkoutType(e.target.value)}
+                >
+                  <option className="bg-black" value="Bicep Curls">
+                    Bicep Curls
+                  </option>
+                  <option className="bg-black" value="Push Ups">
+                    Push-Ups
+                  </option>
+                  <option className="bg-black" value="Squats">
+                    Squats
+                  </option>
+                  <option className="bg-black" value="Crunches">
+                    Crunches
+                  </option>
+                  <option className="bg-black" value="Shoulder Press">
+                    Shoulder Press
+                  </option>
+                  <option className="bg-black" value="Mountain Climbers">
+                    Mountain Climbers
+                  </option>
+                </select>
+
+                <h2 className="text-2xl font-semibold text-gray-800 dark:text-black mb-4">
+                  Workout Time:{" "}
+                  <span
+                    className={`font-bold text-lg ${elapsedTime
+                        ? "text-green-500 bg-green-100 px-2 py-1 rounded"
+                        : "text-yellow-500 bg-yellow-100 px-2 py-1 rounded"
+                      }`}
+                  >
+                    {elapsedTime
+                      ? elapsedTime >= 60
+                        ? `${Math.floor(elapsedTime / 60)} min ${Math.floor(elapsedTime % 60)} sec`
+                        : `${elapsedTime.toFixed(2)} sec`
+                      : "N/A"}
+                  </span>
+
+                </h2>
+
+                {workoutType == "Squats" && (
+                  <h2 className="text-2xl font-semibold text-gray-800 dark:text-black mb-4">
+                    Squat Count:{" "}
+                    <span className="text-yellow-200 font-bold text-2xl">
+                      {squatCount}
+                    </span>
+                  </h2>
+                )}
+
+                {workoutType == "Push Ups" && (
+                  <h2 className="text-2xl font-semibold text-gray-800 dark:text-black mb-4">
+                    Push-Up Count:{" "}
+                    <span className="text-yellow-200 font-bold text-2xl">
+                      {pushUpCount}
+                    </span>
+                  </h2>
+                )}
+
+                {workoutType == "Crunches" && (
+                  <h2 className="text-2xl font-semibold text-gray-800 dark:text-black mb-4">
+                    Crunch Count:{" "}
+                    <span className="text-yellow-200 font-bold text-2xl">
+                      {crunchCount}
+                    </span>
+                  </h2>
+                )}
+
+                {workoutType == "Bicep Curls" && (
+                  <h2 className="text-2xl font-semibold text-gray-800 dark:text-black mb-4">
+                    Bicep Curl Count:{" "}
+                    <span className="text-yellow-200 font-bold text-2xl">
+                      {curlCount}
+                    </span>
+                  </h2>
+                )}
+                {workoutType == "Shoulder Press" && (
+                  <h2 className="text-2xl font-semibold text-gray-800 dark:text-black mb-4">
+                    Shoulder Press Count:{" "}
+                    <span className="text-yellow-200 font-bold text-2xl">
+                      {shoulderPressCount}
+                    </span>
+                  </h2>
+                )}
+                {workoutType == "Mountain Climbers" && (
+                  <h2 className="text-2xl font-semibold text-gray-800 dark:text-black mb-4">
+                    Mountain Climbers Count:{" "}
+                    <span className="text-yellow-200 font-bold text-2xl">
+                      {mountainClimberCount}
+                    </span>
+                  </h2>
+                )}
+
+                {feedbackMessage && <h3
+                  className={`text-lg font-semibold mt-4 p-4 rounded-xl border-2 ${isError
+                      ? "border-red-500 bg-gradient-to-r from-red-500 to-red-700 text-white"
+                      : "border-green-500 bg-gradient-to-r from-green-500 to-green-700 text-white"
+                    } shadow-lg w-full max-w-sm text-center`}
+                >
+                  {feedbackMessage}
+                </h3>}
+              </form>
+              {!poseLandmarker ? (
+                <button
+                  onClick={() => setStartClick(true)}
+                  className="w-auto mx-auto bg-gradient-to-r from-blue-500 to-indigo-600 text-white border-none rounded-full px-8 py-3 text-lg font-semibold shadow-lg hover:from-blue-600 hover:to-indigo-700 focus:outline-none focus:ring-4 focus:ring-indigo-300 transition-all duration-300"
+                >
+                  Start 10 Min Challenge
+                </button>
+              ) : (
+                <button
+                  onClick={handleSubmit}
+                  className="w-[120px] mx-auto bg-gradient-to-r from-red-500 to-pink-600 text-white border-none rounded-full px-8 py-3 text-lg font-semibold shadow-lg hover:from-red-600 hover:to-pink-700 focus:outline-none focus:ring-4 focus:ring-pink-300 transition-all duration-300"
+                >
+                  End
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+      <Footer />
+    </>
+  );
+};
+
+export default Challenge;
+

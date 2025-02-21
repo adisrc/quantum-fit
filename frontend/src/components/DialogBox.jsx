@@ -8,6 +8,12 @@ const DialogBox = ({ exercise, onClose }) => {
   return (
     <div className="rounded-xl p-6 shadow-lg w-96 h-96 text-center bg-white fixed inset-0 bg-opacity-50 mx-auto my-auto backdrop-blur-md z-50">
       {/* <div className="bg-white rounded-xl p-6 shadow-lg w-96 text-center relative"> */}
+      <h2 className="text-2xl font-semibold text-gray-800 dark:text-black mb-4">
+  Time Left: 
+  <span className="font-bold text-lg text-green-500 bg-green-100 px-2 py-1 rounded">
+    {formatTime(timeLeft)}
+  </span>
+</h2>
         <h2 className="text-2xl font-bold text-gray-800">Edit {exercise.name}</h2>
         <div className="mt-4 space-y-3">
           <div>

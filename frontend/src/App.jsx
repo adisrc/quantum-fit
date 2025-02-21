@@ -7,6 +7,7 @@ import Workout from "./pages/Workout";
 import Navbar from "./components/navbar";
 import DietSuggestionPage from "./components/diet";
 import AboutSection from "./pages/About";
+import Challenge from "./components/Challenge";
 
 
 
@@ -25,6 +26,7 @@ export default function App() {
         <Route path="/diet" element={<DietSuggestionPage/>} />
         <Route path="/about" element={<AboutSection/>} />
         <Route path="/profile" element={<Profile/>} />
+        <Route path="/challenge" element={<Challenge/>} />
       </Routes>
 
 </div>
