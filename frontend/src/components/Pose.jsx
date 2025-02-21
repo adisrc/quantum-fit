@@ -26,10 +26,13 @@ const MediaPose = () => {
   const [pushUpCount, setPushUpCount] = useState(0);
   const [crunchCount, setCrunchCount] = useState(0);
   const [curlCount, setCurlCount] = useState(0); // Bicep curl counter
+  const [shoulderPressCount, setShoulderPressCount] = useState(0); // Bicep curl counter
+
   const [squatState, setSquatState] = useState("Up");
   const [pushUpState, setPushUpState] = useState("Up");
   const [crunchState, setCrunchState] = useState("Up");
   const [curlState, setCurlState] = useState("Down"); // State for curl
+  const [shoulderPressState, setShoulderPressState] = useState("Down"); // State for curl
   const [feedbackMessage, setFeedbackMessage] = useState(
     ""
   );
@@ -139,7 +142,9 @@ const MediaPose = () => {
               if (workoutType == "Squats") detectSquats(landmarks);
               if (workoutType == "Push Ups") detectPushUps(landmarks);
               if (workoutType == "Crunches") detectCrunches(landmarks);
-              if (workoutType == "Bicep Curls") detectCurls(landmarks); // Detect curls
+              if (workoutType == "Bicep Curls") detectCurls(landmarks);
+              if (workoutType == "Shoulder Press") detectShoulderPress(landmarks);
+
             });
           } else {
             // User not detected
@@ -201,6 +206,9 @@ const MediaPose = () => {
       case "Crunches":
         reps = crunchCount;
         break;
+        case "Shoulder Press":
+        reps = shoulderPressCount;
+        break;
       default:
         reps = 0;
         console.warn("Unknown workout type:", workoutType);
@@ -244,6 +252,25 @@ const MediaPose = () => {
       return prev;
     });
   };
+
+  const detectShoulderPress = (landmarks) => {
+    const shoulder = landmarks[11]; // Left shoulder
+    const elbow = landmarks[13]; // Left elbow
+    const wrist = landmarks[15]; // Left wrist
+  
+    const angle = calculateAngle(shoulder, elbow, wrist);
+  
+    setShoulderPressState((prev) => {
+      if (angle > 160 && prev === "Down") {
+        return "Up"; // Arms fully extended
+      } else if (angle < 60 && prev === "Up") {
+        setShoulderPressCount((prev) => prev + 1); // Increment count when arms lower
+        return "Down"; // Arms bent (returning down)
+      }
+      return prev;
+    });
+  };
+  
 
   // Function to detect push-ups
   const detectPushUps = (landmarks) => {
@@ -347,6 +374,9 @@ const MediaPose = () => {
                   <option className="bg-black" value="Crunches">
                     Crunches
                   </option>
+                  <option className="bg-black" value="Shoulder Press">
+                    Shoulder Press
+                  </option>
                 </select>
 
                 <h2 className="text-2xl font-semibold text-gray-800 dark:text-black mb-4">
@@ -399,6 +429,14 @@ const MediaPose = () => {
                     Bicep Curl Count:{" "}
                     <span className="text-yellow-200 font-bold text-2xl">
                       {curlCount}
+                    </span>
+                  </h2>
+                )}
+                {workoutType == "Shoulder Press" && (
+                  <h2 className="text-2xl font-semibold text-gray-800 dark:text-black mb-4">
+                    Shoulder Press Count:{" "}
+                    <span className="text-yellow-200 font-bold text-2xl">
+                      {shoulderPressCount}
                     </span>
                   </h2>
                 )}
