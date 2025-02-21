@@ -109,7 +109,7 @@ const MediaPose = () => {
 
           if (results.landmarks.length > 0) {
             // User detected in frame
-            setFeedbackMessagessage("Great job! Keep going!");
+            setFeedbackMessage("Great job! Keep going!");
             setIsError(false);
             canvasCtx.clearRect(
               0,
