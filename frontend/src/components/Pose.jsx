@@ -40,7 +40,7 @@ const MediaPose = () => {
   );
   const [isError, setIsError] = useState(false);
 
-  const {fromDialog,reps} = location.state || {};
+  const {fromDialog,reps,sets} = location.state || {};
   const [completeSet,setCompleteSet] = useState(false);
 
   const handleSetCompletion = () => {
@@ -49,10 +49,15 @@ const MediaPose = () => {
       setCompleteSet(false), 100);
   };
   useEffect(() => {
-    if (reps > 0 && curlCount > 0 && curlCount % reps === 0) {
+    if (reps > 0 && curlCount > 0) {
+      if(curlCount >= (reps * sets)){
+        handleSubmit();
+      }
+      if(curlCount % reps === 0 && curlCount <= reps * sets){
       handleSetCompletion();
+      }
     }
-  }, [curlCount, reps]);
+  }, [curlCount, reps,sets]);
 
   const speakMessage = (message) => {
     const synth = window.speechSynthesis;
@@ -190,8 +195,8 @@ const MediaPose = () => {
 
   // HANDLE SUBMIT
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async () => {
+    // e.preventDefault();
     // Stop the camera stream
     if (videoRef.current && videoRef.current.srcObject) {
       const stream = videoRef.current.srcObject;
