@@ -5,6 +5,7 @@ import { useWorkout } from "../contexts/WorkoutContext";
 import { USER_API_END_POINT } from "../utils/constant";
 import axios from "axios";
 import Footer from "./footer";
+import WorkoutDetails from "./WorkoutDetails";
 
 const MediaPose = () => {
   const location = useLocation();
@@ -16,7 +17,6 @@ const MediaPose = () => {
   const [duration, setDuration] = useState();
   const [startTime, setStartTime] = useState(null); // To store the start time
   const [elapsedTime, setElapsedTime] = useState(0); // To store the elapsed time
-
   //FORMDATA
   // const [workoutType, setWorkoutType] = useState("None");
   const { workoutType, setWorkoutType, isSignedIn, user } = useWorkout();
@@ -27,6 +27,7 @@ const MediaPose = () => {
   const [crunchCount, setCrunchCount] = useState(0);
   const [curlCount, setCurlCount] = useState(0); // Bicep curl counter
   const [shoulderPressCount, setShoulderPressCount] = useState(0); // Bicep curl counter
+
   const [mountainClimberCount, setMountainClimberCount] = useState(0); //Mountain Climber counter
 
   const [squatState, setSquatState] = useState("Up");
@@ -40,8 +41,62 @@ const MediaPose = () => {
   );
   const [isError, setIsError] = useState(false);
 
+  const {fromDialog,reps,sets} = location.state || {};
+  const [completeSet,setCompleteSet] = useState(false);
+  const [exerciseName, setExerciseName] = useState(location.state?.exerciseName || ""); 
+
+  const [exerciseCount, setExerciseCount] = useState(0);
+
+  useEffect(() => {
+    if(exerciseName){
+      setWorkoutType(exerciseName);
+      console.log("Exercise:",exerciseName);
+    }
+  },[location]);
+
+  useEffect(() => {
+    switch (exerciseName) {
+      case "Squats":
+        setExerciseCount(squatCount);
+        break;
+      case "Push-Ups":
+        setExerciseCount(pushUpCount);
+        break;
+      case "Crunches":
+        setExerciseCount(crunchCount);
+        break;
+      case "Bicep Curls":
+        setExerciseCount(curlCount);
+        break;
+      case "Shoulder Press":
+        setExerciseCount(shoulderPressCount);
+        break;
+      case "Mountain Climbers":
+        setExerciseCount(mountainClimberCount);
+        break;
+      default:
+        setExerciseCount(0);
+    }
+  }, [squatCount, pushUpCount, crunchCount, curlCount, shoulderPressCount, mountainClimberCount, exerciseName]);
+
+  const handleSetCompletion = () => {
+    setCompleteSet(true);
+    setTimeout(() => setCompleteSet(false), 100);
+  };
+
+  useEffect(() => {
+    if (reps > 0 && exerciseCount > 0) {
+      if (exerciseCount >= reps * sets) {
+        handleSubmit();
+      }
+      if (exerciseCount % reps === 0 && exerciseCount <= reps * sets) {
+        handleSetCompletion();
+      }
+    }
+  }, [exerciseCount, reps, sets]);
+
   const speakMessage = (message) => {
-    const synth = window.speechSynthesis; 
+    const synth = window.speechSynthesis;
     const utterance = new SpeechSynthesisUtterance(message);
     synth.speak(utterance);
   };
@@ -176,8 +231,8 @@ const MediaPose = () => {
 
   // HANDLE SUBMIT
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async () => {
+    // e.preventDefault();
     // Stop the camera stream
     if (videoRef.current && videoRef.current.srcObject) {
       const stream = videoRef.current.srcObject;
@@ -375,7 +430,10 @@ const MediaPose = () => {
                 className="w-full max-w-[800px] h-auto aspect-[4/3] m-4 border-2 border-green-200 rounded-xl mx-auto"
               />
             }
-
+            <div className="flex flex-col gap-4">
+            <div className="relative m-auto">
+              {fromDialog ? <WorkoutDetails completeSet={completeSet}/> : null}
+            </div>
             <div className="relative m-auto  bg-gradient-to-r from-gray-200 via-gray-400 to-gray-600  rounded-3xl p-6 shadow-2xl backdrop-blur-lg">
               <form onSubmit={handleSubmit} className="my-4 mx-8">
                 <select
@@ -496,6 +554,7 @@ const MediaPose = () => {
                   End
                 </button>
               )}
+            </div>
             </div>
           </div>
         </div>
