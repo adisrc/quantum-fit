@@ -41,7 +41,7 @@ const MediaPose = () => {
   const [isError, setIsError] = useState(false);
 
   const speakMessage = (message) => {
-    const synth = window.speechSynthesis;
+    const synth = window.speechSynthesis; 
     const utterance = new SpeechSynthesisUtterance(message);
     synth.speak(utterance);
   };
