@@ -5,6 +5,7 @@ import { useWorkout } from "../contexts/WorkoutContext";
 import { USER_API_END_POINT } from "../utils/constant";
 import axios from "axios";
 import Footer from "./footer";
+import WorkoutDetails from "./WorkoutDetails";
 
 const MediaPose = () => {
   const location = useLocation();
@@ -16,7 +17,6 @@ const MediaPose = () => {
   const [duration, setDuration] = useState();
   const [startTime, setStartTime] = useState(null); // To store the start time
   const [elapsedTime, setElapsedTime] = useState(0); // To store the elapsed time
-
   //FORMDATA
   // const [workoutType, setWorkoutType] = useState("None");
   const { workoutType, setWorkoutType, isSignedIn, user } = useWorkout();
@@ -27,6 +27,7 @@ const MediaPose = () => {
   const [crunchCount, setCrunchCount] = useState(0);
   const [curlCount, setCurlCount] = useState(0); // Bicep curl counter
   const [shoulderPressCount, setShoulderPressCount] = useState(0); // Bicep curl counter
+
   const [mountainClimberCount, setMountainClimberCount] = useState(0); //Mountain Climber counter
 
   const [squatState, setSquatState] = useState("Up");
@@ -39,6 +40,60 @@ const MediaPose = () => {
     ""
   );
   const [isError, setIsError] = useState(false);
+
+  const {fromDialog,reps,sets} = location.state || {};
+  const [completeSet,setCompleteSet] = useState(false);
+  const [exerciseName, setExerciseName] = useState(location.state?.exerciseName || ""); 
+
+  const [exerciseCount, setExerciseCount] = useState(0);
+
+  useEffect(() => {
+    if(exerciseName){
+      setWorkoutType(exerciseName);
+      console.log("Exercise:",exerciseName);
+    }
+  },[location]);
+
+  useEffect(() => {
+    switch (exerciseName) {
+      case "Squats":
+        setExerciseCount(squatCount);
+        break;
+      case "Push-Ups":
+        setExerciseCount(pushUpCount);
+        break;
+      case "Crunches":
+        setExerciseCount(crunchCount);
+        break;
+      case "Bicep Curls":
+        setExerciseCount(curlCount);
+        break;
+      case "Shoulder Press":
+        setExerciseCount(shoulderPressCount);
+        break;
+      case "Mountain Climbers":
+        setExerciseCount(mountainClimberCount);
+        break;
+      default:
+        setExerciseCount(0);
+    }
+  }, [squatCount, pushUpCount, crunchCount, curlCount, shoulderPressCount, mountainClimberCount, exerciseName]);
+
+  const handleSetCompletion = () => {
+    setCompleteSet(true);
+    setTimeout(() => setCompleteSet(false), 100);
+  };
+
+  useEffect(() => {
+    if (reps > 0 && exerciseCount > 0) {
+      if (exerciseCount >= reps * sets) {
+        handleSubmit();
+      }
+      if (exerciseCount % reps === 0 && exerciseCount <= reps * sets) {
+        handleSetCompletion();
+      }
+    }
+  }, [exerciseCount, reps, sets]);
 
   const speakMessage = (message) => {
     const synth = window.speechSynthesis;
@@ -176,8 +231,8 @@ const MediaPose = () => {
 
   // HANDLE SUBMIT
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async () => {
+    // e.preventDefault();
     // Stop the camera stream
     if (videoRef.current && videoRef.current.srcObject) {
       const stream = videoRef.current.srcObject;
@@ -375,7 +430,10 @@ const MediaPose = () => {
                 className="w-full max-w-[800px] h-auto aspect-[4/3] m-4 border-2 border-green-200 rounded-xl mx-auto"
               />
             }
-
+            <div className="flex flex-col gap-4">
+            <div className="relative m-auto">
+              {fromDialog ? <WorkoutDetails completeSet={completeSet}/> : null}
+            </div>
             <div className="relative m-auto  bg-gradient-to-r from-gray-200 via-gray-400 to-gray-600  rounded-3xl p-6 shadow-2xl backdrop-blur-lg">
               <form onSubmit={handleSubmit} className="my-4 mx-8">
                 <select
@@ -497,6 +555,7 @@ const MediaPose = () => {
                 </button>
               )}
             </div>
+            </div>
           </div>
         </div>
       </div>
@@ -507,56 +566,3 @@ const MediaPose = () => {
 
 export default MediaPose;
 
-// if (pose.landmarks && pose.score > 0.8) { // Adjust threshold
-//   count += 1;
-// }
-
-// import cv from '@techstark/opencv-js';
-
-// function isBlurry(image, threshold = 100) {
-//     let gray = new cv.Mat();
-//     cv.cvtColor(image, gray, cv.COLOR_RGBA2GRAY);
-//     let laplacian = new cv.Mat();
-//     cv.Laplacian(gray, laplacian, cv.CV_64F);
-//     let variance = cv.mean(laplacian).w;
-//     gray.delete(); laplacian.delete();
-//     return variance < threshold;  // Returns true if blurry
-// }
-// if (isBlurry(videoFrame)) {
-//   console.log("Skipping blurry frame");
-//   return;
-// }
-
-// let lastDetectionTime = 0;
-// const detectionCooldown = 2000; // 2 seconds
-
-// function shouldCountPose() {
-//     let now = Date.now();
-//     if (now - lastDetectionTime > detectionCooldown) {
-//         lastDetectionTime = now;
-//         return true;
-//     }
-//     return false;
-// }
-
-// // Use it in detection:
-// if (pose.landmarks && shouldCountPose()) {
-//     count += 1;
-// }
-
-// let visibleLandmarks = pose.landmarks.filter(lm => lm.visibility > 0.5);
-// if (visibleLandmarks.length > 10) {  // Adjust threshold
-//     count += 1;
-// }
-
-// let minX = Math.min(...pose.landmarks.map(lm => lm.x));
-// let maxX = Math.max(...pose.landmarks.map(lm => lm.x));
-// let minY = Math.min(...pose.landmarks.map(lm => lm.y));
-// let maxY = Math.max(...pose.landmarks.map(lm => lm.y));
-
-// let bboxWidth = maxX - minX;
-// let bboxHeight = maxY - minY;
-
-// if (bboxWidth * bboxHeight > 0.05) {  // Adjust based on your use case
-//     count += 1;
-// }
