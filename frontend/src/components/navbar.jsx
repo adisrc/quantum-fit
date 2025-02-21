@@ -35,7 +35,6 @@ const Navbar = () => {
             <Link to="/diet" className="text-white hover:text-orange-500">
               DIET
             </Link>
-            <Link to="/profile" className="text-white hover:text-orange-500">PROFILE</Link>
           </nav>
 
           {/* Button */}
