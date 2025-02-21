@@ -7,27 +7,27 @@ import { useNavigate } from "react-router-dom";
 const exercises = [
   {
     id: 1,
+    name: "Bicep Curls",
+    image: "../images/bicepcurls.png",
+    video: "../videos/bicepcurls.mp4",
+  },
+  {
+    id: 2,
     name: "Push Ups",
     image: "../images/pushup.png",
     video: "../videos/pushup.mp4",
   },
   {
-    id: 2,
-    name: "Squats",
-    image: "../images/feature2.png",
-    video: "../videos/pushup.mp4",
-  },
-  {
     id: 3,
-    name: "Plank",
-    image: "../images/feature2.png",
+    name: "Squats",
+    image: "../images/squats.png",
     video: "../videos/squats.mp4",
   },
   {
     id: 4,
-    name: "Bicep Curls",
-    image: "../images/bicepcurls.png",
-    video: "../videos/bicepcurls.mp4",
+    name: "Shoulder Press",
+    image: "../images/shoulderpress.png",
+    video: "../videos/shoulderpress.mp4",
   },
   {
     id: 5,

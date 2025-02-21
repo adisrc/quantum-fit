@@ -1,28 +1,59 @@
 import { User } from '../models/userSchema.js'
 
-export const Register = async (req, res)=>{
-     try {
-        const {userId, email} = req.body;
-        console.log(req.body)
 
-        let user = await User.findOne({userId});
-        console.log(user)
-        if(!user){ 
-             user =  await User.create( {userId:userId, email})
-        }
-        let otherUser = await User.find({});
+export const Register = async (req, res) => {
+    try {
+        const { userId, email } = req.body;
+        console.log(req.body);
+
+        let user = await User.findOne({ userId });
+        console.log(user);
         
+        if (!user) { 
+            user = await User.create({ userId, email });
+        }
+
+        // Fetch all users
+        const allUsersData = await User.find();
+
         return res.status(200).json({
-            message: "user send successfully",
+            message: "User registered successfully",
             user,
-            otherUser,
+            allUsersData, // Sending all users
             success: true
-        })
+        });
 
     } catch (error) {
-        console.log(error)
+        console.log(error);
+        return res.status(500).json({
+            message: "Internal Server Error",
+            success: false,
+            error: error.message
+        });
     }
-}
+};
+
+
+// export const Register = async (req, res)=>{
+//      try {
+//         const {userId, email} = req.body;
+//         console.log(req.body)
+
+//         let user = await User.findOne({userId});
+//         console.log(user)
+//         if(!user){ 
+//              user =  await User.create( {userId:userId, email})
+//         }
+//         return res.status(200).json({
+//             message: "user send successfully",
+//             user,
+//             success: true
+//         })
+
+//     } catch (error) {
+//         console.log(error)
+//     }
+// }
 
 // export const Register = async (req, res) => {
 //     try {

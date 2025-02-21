@@ -1,2 +1,2 @@
-export const USER_API_END_POINT = "http://localhost:3000/api/v1";
+export const USER_API_END_POINT = "https://quant-fit-backend.vercel.app/api/v1";
 
