@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import './index.css'
-import { ClerkProvider } from '@clerk/clerk-react'
+import { ClerkProvider } from '@clerk/clerk-react'//authentication
 import App from './App'
 import { WorkoutProvider } from './contexts/WorkoutContext'
 import { BrowserRouter } from 'react-router-dom'

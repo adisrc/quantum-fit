@@ -31,16 +31,30 @@ const MediaPose = () => {
   const [crunchState, setCrunchState] = useState("Up");
   const [curlState, setCurlState] = useState("Down"); // State for curl
   const [feedbackMessage, setFeedbackMessage] = useState(
-    "Perform your exercises!"
+    ""
   );
   const [isError, setIsError] = useState(false);
 
+  const speakMessage = (message) => {
+    const synth = window.speechSynthesis;
+    const utterance = new SpeechSynthesisUtterance(message);
+    synth.speak(utterance);
+  };
+  useEffect(() => {
+    if (feedbackMessage) {
+      speakMessage(feedbackMessage);
+    }
+  }, [feedbackMessage]);
+  
   useEffect(() => {
     if (location.state?.exerciseName) {
       setWorkoutType(location.state.exerciseName);
       console.log(workoutType);
     }
   }, [location]);
+
+  
+
 
   useEffect(() => {
     if (startClick) {
@@ -389,7 +403,7 @@ const MediaPose = () => {
                   </h2>
                 )}
 
-                <h3
+  { feedbackMessage&& <h3
                   className={`text-lg font-semibold mt-4 p-4 rounded-xl border-2 ${
                     isError
                       ? "border-red-500 bg-gradient-to-r from-red-500 to-red-700 text-white"
@@ -397,7 +411,7 @@ const MediaPose = () => {
                   } shadow-lg w-full max-w-sm text-center`}
                 >
                   {feedbackMessage}
-                </h3>
+                </h3>}
               </form>
               {!poseLandmarker ? (
                 <button
