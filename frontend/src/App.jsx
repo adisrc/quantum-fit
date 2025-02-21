@@ -24,6 +24,7 @@ export default function App() {
         <Route path="/pose" element={<MediaPose />} />
         <Route path="/diet" element={<DietSuggestionPage/>} />
         <Route path="/about" element={<AboutSection/>} />
+        <Route path="/profile" element={<Profile/>} />
       </Routes>
 
 </div>
