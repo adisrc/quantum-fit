@@ -5,6 +5,7 @@ import { useWorkout } from "../contexts/WorkoutContext";
 import { USER_API_END_POINT } from "../utils/constant";
 import axios from "axios";
 import Footer from "./footer";
+import WorkoutDetails from "./WorkoutDetails";
 
 const MediaPose = () => {
   const location = useLocation();
@@ -16,7 +17,6 @@ const MediaPose = () => {
   const [duration, setDuration] = useState();
   const [startTime, setStartTime] = useState(null); // To store the start time
   const [elapsedTime, setElapsedTime] = useState(0); // To store the elapsed time
-
   //FORMDATA
   // const [workoutType, setWorkoutType] = useState("None");
   const { workoutType, setWorkoutType, isSignedIn, user } = useWorkout();
@@ -27,16 +27,43 @@ const MediaPose = () => {
   const [crunchCount, setCrunchCount] = useState(0);
   const [curlCount, setCurlCount] = useState(0); // Bicep curl counter
   const [shoulderPressCount, setShoulderPressCount] = useState(0); // Bicep curl counter
+  const [mountainClimberCount, setMountainClimberCount] = useState(0); //Mountain Climber counter
 
   const [squatState, setSquatState] = useState("Up");
   const [pushUpState, setPushUpState] = useState("Up");
   const [crunchState, setCrunchState] = useState("Up");
   const [curlState, setCurlState] = useState("Down"); // State for curl
-  const [shoulderPressState, setShoulderPressState] = useState("Down"); // State for curl
+  const [shoulderPressState, setShoulderPressState] = useState("Down"); // State for curl, 
+  const [mountainClimberState, setMountainClimberState] = useState("In") // state for Mountain Climber
   const [feedbackMessage, setFeedbackMessage] = useState(
-    "Perform your exercises!"
+    ""
   );
   const [isError, setIsError] = useState(false);
+
+  const {fromDialog,reps} = location.state || {};
+  const [completeSet,setCompleteSet] = useState(false);
+
+  const handleSetCompletion = () => {
+    setCompleteSet(true);
+    setTimeout(() => 
+      setCompleteSet(false), 100);
+  };
+  useEffect(() => {
+    if (reps > 0 && curlCount > 0 && curlCount % reps === 0) {
+      handleSetCompletion();
+    }
+  }, [curlCount, reps]);
+
+  const speakMessage = (message) => {
+    const synth = window.speechSynthesis;
+    const utterance = new SpeechSynthesisUtterance(message);
+    synth.speak(utterance);
+  };
+  useEffect(() => {
+    if (feedbackMessage) {
+      speakMessage(feedbackMessage);
+    }
+  }, [feedbackMessage]);
 
   useEffect(() => {
     if (location.state?.exerciseName) {
@@ -44,6 +71,9 @@ const MediaPose = () => {
       console.log(workoutType);
     }
   }, [location]);
+
+
+
 
   useEffect(() => {
     if (startClick) {
@@ -130,6 +160,7 @@ const MediaPose = () => {
               if (workoutType == "Crunches") detectCrunches(landmarks);
               if (workoutType == "Bicep Curls") detectCurls(landmarks);
               if (workoutType == "Shoulder Press") detectShoulderPress(landmarks);
+              if (workoutType == "Mountain Climbers") detectMountainClimbers(landmarks);
 
             });
           } else {
@@ -192,7 +223,7 @@ const MediaPose = () => {
       case "Crunches":
         reps = crunchCount;
         break;
-        case "Shoulder Press":
+      case "Shoulder Press":
         reps = shoulderPressCount;
         break;
       default:
@@ -243,9 +274,9 @@ const MediaPose = () => {
     const shoulder = landmarks[11]; // Left shoulder
     const elbow = landmarks[13]; // Left elbow
     const wrist = landmarks[15]; // Left wrist
-  
+
     const angle = calculateAngle(shoulder, elbow, wrist);
-  
+
     setShoulderPressState((prev) => {
       if (angle > 160 && prev === "Down") {
         return "Up"; // Arms fully extended
@@ -256,7 +287,7 @@ const MediaPose = () => {
       return prev;
     });
   };
-  
+
 
   // Function to detect push-ups
   const detectPushUps = (landmarks) => {
@@ -319,6 +350,24 @@ const MediaPose = () => {
     });
   };
 
+  // Function to detect Mountin Climbers
+  const detectMountainClimbers = (landmarks) => {
+    const hip = landmarks[24];    // Right hip
+    const knee = landmarks[26];   // Right knee
+    const ankle = landmarks[28];  // Right ankle
+
+    const angle = calculateAngle(hip, knee, ankle);
+
+    setMountainClimberState((prev) => {
+      if (angle < 90 && prev === "Out") {
+        return "In"; // Detect push-up down position
+      } else if (angle > 160 && prev === "In") {
+        setMountainClimberCount((prev) => prev + 1); // Increment push-up count
+        return "Out"; // Reset state
+      }
+      return prev;
+    });
+  };
   // Function to calculate angle between three points
   const calculateAngle = (A, B, C) => {
     const radians =
@@ -340,7 +389,9 @@ const MediaPose = () => {
                 className="w-full max-w-[800px] h-auto aspect-[4/3] m-4 border-2 border-green-200 rounded-xl mx-auto"
               />
             }
-
+            <div>
+              {fromDialog ? <WorkoutDetails completeSet={completeSet}/> : null}
+            </div>
             <div className="relative m-auto  bg-gradient-to-r from-gray-200 via-gray-400 to-gray-600  rounded-3xl p-6 shadow-2xl backdrop-blur-lg">
               <form onSubmit={handleSubmit} className="my-4 mx-8">
                 <select
@@ -363,23 +414,25 @@ const MediaPose = () => {
                   <option className="bg-black" value="Shoulder Press">
                     Shoulder Press
                   </option>
+                  <option className="bg-black" value="Mountain Climbers">
+                    Mountain Climbers
+                  </option>
                 </select>
 
                 <h2 className="text-2xl font-semibold text-gray-800 dark:text-black mb-4">
                   Workout Time:{" "}
                   <span
-  className={`font-bold text-lg ${
-    elapsedTime
-      ? "text-green-500 bg-green-100 px-2 py-1 rounded"
-      : "text-yellow-500 bg-yellow-100 px-2 py-1 rounded"
-  }`}
->
-  {elapsedTime
-    ? elapsedTime >= 60
-      ? `${Math.floor(elapsedTime / 60)} min ${Math.floor(elapsedTime % 60)} sec`
-      : `${elapsedTime.toFixed(2)} sec`
-    : "N/A"}
-</span>
+                    className={`font-bold text-lg ${elapsedTime
+                        ? "text-green-500 bg-green-100 px-2 py-1 rounded"
+                        : "text-yellow-500 bg-yellow-100 px-2 py-1 rounded"
+                      }`}
+                  >
+                    {elapsedTime
+                      ? elapsedTime >= 60
+                        ? `${Math.floor(elapsedTime / 60)} min ${Math.floor(elapsedTime % 60)} sec`
+                        : `${elapsedTime.toFixed(2)} sec`
+                      : "N/A"}
+                  </span>
 
                 </h2>
 
@@ -426,16 +479,23 @@ const MediaPose = () => {
                     </span>
                   </h2>
                 )}
+                {workoutType == "Mountain Climbers" && (
+                  <h2 className="text-2xl font-semibold text-gray-800 dark:text-black mb-4">
+                    Mountain Climbers Count:{" "}
+                    <span className="text-yellow-200 font-bold text-2xl">
+                      {mountainClimberCount}
+                    </span>
+                  </h2>
+                )}
 
-                <h3
-                  className={`text-lg font-semibold mt-4 p-4 rounded-xl border-2 ${
-                    isError
+                {feedbackMessage && <h3
+                  className={`text-lg font-semibold mt-4 p-4 rounded-xl border-2 ${isError
                       ? "border-red-500 bg-gradient-to-r from-red-500 to-red-700 text-white"
                       : "border-green-500 bg-gradient-to-r from-green-500 to-green-700 text-white"
-                  } shadow-lg w-full max-w-sm text-center`}
+                    } shadow-lg w-full max-w-sm text-center`}
                 >
                   {feedbackMessage}
-                </h3>
+                </h3>}
               </form>
               {!poseLandmarker ? (
                 <button

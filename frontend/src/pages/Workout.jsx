@@ -57,7 +57,7 @@ const Workout = () => {
 
   const handleStartClick = (exerciseName) => {
     console.log(exerciseName);
-    navigate("/pose", { state: { exerciseName } }); // Passing exercise name as state
+    navigate("/pose",{ state : {exerciseName}}); // Passing exercise name as state
   };
 
   return (
