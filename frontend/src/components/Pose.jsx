@@ -394,7 +394,8 @@ const MediaPose = () => {
                 className="w-full max-w-[800px] h-auto aspect-[4/3] m-4 border-2 border-green-200 rounded-xl mx-auto"
               />
             }
-            <div>
+            <div className="flex flex-col gap-4">
+            <div className="relative m-auto">
               {fromDialog ? <WorkoutDetails completeSet={completeSet}/> : null}
             </div>
             <div className="relative m-auto  bg-gradient-to-r from-gray-200 via-gray-400 to-gray-600  rounded-3xl p-6 shadow-2xl backdrop-blur-lg">
@@ -517,6 +518,7 @@ const MediaPose = () => {
                   End
                 </button>
               )}
+            </div>
             </div>
           </div>
         </div>
