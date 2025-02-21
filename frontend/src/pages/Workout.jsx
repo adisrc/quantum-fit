@@ -38,8 +38,8 @@ const exercises = [
   {
     id: 6,
     name: "Mountain Climbers",
-    image: "../images/feature2.png",
-    video: "../videos/squats.mp4",
+    image: "../images/mc.png",
+    video: "../videos/mc.mp4",
   },
 ];
 
