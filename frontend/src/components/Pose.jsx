@@ -42,22 +42,57 @@ const MediaPose = () => {
 
   const {fromDialog,reps,sets} = location.state || {};
   const [completeSet,setCompleteSet] = useState(false);
+  const [exerciseName, setExerciseName] = useState(location.state?.exerciseName || ""); 
+
+  const [exerciseCount, setExerciseCount] = useState(0);
+
+  useEffect(() => {
+    if(exerciseName){
+      setWorkoutType(exerciseName);
+      console.log("Exercise:",exerciseName);
+    }
+  },[location]);
+
+  useEffect(() => {
+    switch (exerciseName) {
+      case "Squats":
+        setExerciseCount(squatCount);
+        break;
+      case "Push-Ups":
+        setExerciseCount(pushUpCount);
+        break;
+      case "Crunches":
+        setExerciseCount(crunchCount);
+        break;
+      case "Bicep Curls":
+        setExerciseCount(curlCount);
+        break;
+      case "Shoulder Press":
+        setExerciseCount(shoulderPressCount);
+        break;
+      case "Mountain Climbers":
+        setExerciseCount(mountainClimberCount);
+        break;
+      default:
+        setExerciseCount(0);
+    }
+  }, [squatCount, pushUpCount, crunchCount, curlCount, shoulderPressCount, mountainClimberCount, exerciseName]);
 
   const handleSetCompletion = () => {
     setCompleteSet(true);
-    setTimeout(() => 
-      setCompleteSet(false), 100);
+    setTimeout(() => setCompleteSet(false), 100);
   };
+
   useEffect(() => {
-    if (reps > 0 && curlCount > 0) {
-      if(curlCount >= (reps * sets)){
+    if (reps > 0 && exerciseCount > 0) {
+      if (exerciseCount >= reps * sets) {
         handleSubmit();
       }
-      if(curlCount % reps === 0 && curlCount <= reps * sets){
-      handleSetCompletion();
+      if (exerciseCount % reps === 0 && exerciseCount <= reps * sets) {
+        handleSetCompletion();
       }
     }
-  }, [curlCount, reps,sets]);
+  }, [exerciseCount, reps, sets]);
 
   const speakMessage = (message) => {
     const synth = window.speechSynthesis;
