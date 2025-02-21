@@ -12,14 +12,14 @@ export const Register = async (req, res) => {
         if (!user) { 
             user = await User.create({ userId, email });
         }
-
-        // Fetch all users
+        
+        // fetching all users
         const allUsersData = await User.find();
 
         return res.status(200).json({
             message: "User registered successfully",
             user,
-            allUsersData, // Sending all users
+            allUsersData, // sending all users
             success: true
         });
 
@@ -32,50 +32,6 @@ export const Register = async (req, res) => {
         });
     }
 };
-
-
-// export const Register = async (req, res)=>{
-//      try {
-//         const {userId, email} = req.body;
-//         console.log(req.body)
-
-//         let user = await User.findOne({userId});
-//         console.log(user)
-//         if(!user){ 
-//              user =  await User.create( {userId:userId, email})
-//         }
-//         return res.status(200).json({
-//             message: "user send successfully",
-//             user,
-//             success: true
-//         })
-
-//     } catch (error) {
-//         console.log(error)
-//     }
-// }
-
-// export const Register = async (req, res) => {
-//     try {
-//       const { userId, email } = req.body;
-//       console.log(req.body);
-  
-//       let user = await User.findOne({ userId });
-  
-//       if (!user) {
-//         user = await User.create({ userId, email });
-//       }
-  
-//       return res.status(200).json({
-//         message: "User data fetched successfully",
-//         user,
-//         success: true,
-//       });
-//     } catch (error) {
-//       console.error("Error in Register:", error);
-//       res.status(500).json({ message: "Server error", success: false });
-//     }
-//   };
 
 
 export const Workout = async (req, res) => {

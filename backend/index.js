@@ -2,6 +2,7 @@ import express from 'express'
 import dotenv from 'dotenv'
 import databaseConnection from './config/database.js'
 import userRoute from './routes/userRoute.js'
+import challengeRoute from'./routes/challengeRoute.js'
 import cors from 'cors'
 dotenv.config({ path: '.env' })
 
@@ -16,6 +17,7 @@ const corsOptions = {
 }
 app.use(cors(corsOptions))
 
+app.use('/api/v1/challenge', challengeRoute);
 app.use('/api/v1', userRoute);
 app.get('/home', (req, res) => {
     res.status(200).json({
