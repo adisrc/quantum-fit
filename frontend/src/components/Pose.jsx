@@ -27,6 +27,7 @@ const MediaPose = () => {
   const [crunchCount, setCrunchCount] = useState(0);
   const [curlCount, setCurlCount] = useState(0); // Bicep curl counter
   const [shoulderPressCount, setShoulderPressCount] = useState(0); // Bicep curl counter
+
   const [mountainClimberCount, setMountainClimberCount] = useState(0); //Mountain Climber counter
 
   const [squatState, setSquatState] = useState("Up");
@@ -39,6 +40,71 @@ const MediaPose = () => {
     ""
   );
   const [isError, setIsError] = useState(false);
+
+  const {fromDialog,reps,sets} = location.state || {};
+  const [completeSet,setCompleteSet] = useState(false);
+  const [exerciseName, setExerciseName] = useState(location.state?.exerciseName || ""); 
+
+  const [exerciseCount, setExerciseCount] = useState(0);
+
+  useEffect(() => {
+    if(exerciseName){
+      setWorkoutType(exerciseName);
+      console.log("Exercise:",exerciseName);
+    }
+  },[location]);
+
+  useEffect(() => {
+    switch (exerciseName) {
+      case "Squats":
+        setExerciseCount(squatCount);
+        break;
+      case "Push-Ups":
+        setExerciseCount(pushUpCount);
+        break;
+      case "Crunches":
+        setExerciseCount(crunchCount);
+        break;
+      case "Bicep Curls":
+        setExerciseCount(curlCount);
+        break;
+      case "Shoulder Press":
+        setExerciseCount(shoulderPressCount);
+        break;
+      case "Mountain Climbers":
+        setExerciseCount(mountainClimberCount);
+        break;
+      default:
+        setExerciseCount(0);
+    }
+  }, [squatCount, pushUpCount, crunchCount, curlCount, shoulderPressCount, mountainClimberCount, exerciseName]);
+
+  const handleSetCompletion = () => {
+    setCompleteSet(true);
+    setTimeout(() => setCompleteSet(false), 100);
+  };
+
+  useEffect(() => {
+    if (reps > 0 && exerciseCount > 0) {
+      if (exerciseCount >= reps * sets) {
+        handleSubmit();
+      }
+      if (exerciseCount % reps === 0 && exerciseCount <= reps * sets) {
+        handleSetCompletion();
+      }
+    }
+  }, [exerciseCount, reps, sets]);
+
+  const speakMessage = (message) => {
+    const synth = window.speechSynthesis;
+    const utterance = new SpeechSynthesisUtterance(message);
+    synth.speak(utterance);
+  };
+  useEffect(() => {
+    if (feedbackMessage) {
+      speakMessage(feedbackMessage);
+    }
+  }, [feedbackMessage]);
 
   useEffect(() => {
     if (location.state?.exerciseName) {
