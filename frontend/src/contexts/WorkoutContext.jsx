@@ -58,10 +58,10 @@ export const WorkoutProvider = ({ children }) => {
         });
 
         if (response.data.success) {
-          setUserData(response.data.user); 
-
+          setUserData(response.data); 
+              
           const dailyLeaderboard = getDailyLeaderboard(response.data.allUsersData);
-          console.log(dailyLeaderboard);
+          console.log("Leaderboard: ",dailyLeaderboard);
            if(dailyLeaderboard.length==0)
             setLeaderBoard([
               {

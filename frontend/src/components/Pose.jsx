@@ -109,7 +109,7 @@ const MediaPose = () => {
 
           if (results.landmarks.length > 0) {
             // User detected in frame
-            setFeedbackMessage("Great job! Keep going!");
+            setFeedbackMessagessage("Great job! Keep going!");
             setIsError(false);
             canvasCtx.clearRect(
               0,
@@ -507,56 +507,3 @@ const MediaPose = () => {
 
 export default MediaPose;
 
-// if (pose.landmarks && pose.score > 0.8) { // Adjust threshold
-//   count += 1;
-// }
-
-// import cv from '@techstark/opencv-js';
-
-// function isBlurry(image, threshold = 100) {
-//     let gray = new cv.Mat();
-//     cv.cvtColor(image, gray, cv.COLOR_RGBA2GRAY);
-//     let laplacian = new cv.Mat();
-//     cv.Laplacian(gray, laplacian, cv.CV_64F);
-//     let variance = cv.mean(laplacian).w;
-//     gray.delete(); laplacian.delete();
-//     return variance < threshold;  // Returns true if blurry
-// }
-// if (isBlurry(videoFrame)) {
-//   console.log("Skipping blurry frame");
-//   return;
-// }
-
-// let lastDetectionTime = 0;
-// const detectionCooldown = 2000; // 2 seconds
-
-// function shouldCountPose() {
-//     let now = Date.now();
-//     if (now - lastDetectionTime > detectionCooldown) {
-//         lastDetectionTime = now;
-//         return true;
-//     }
-//     return false;
-// }
-
-// // Use it in detection:
-// if (pose.landmarks && shouldCountPose()) {
-//     count += 1;
-// }
-
-// let visibleLandmarks = pose.landmarks.filter(lm => lm.visibility > 0.5);
-// if (visibleLandmarks.length > 10) {  // Adjust threshold
-//     count += 1;
-// }
-
-// let minX = Math.min(...pose.landmarks.map(lm => lm.x));
-// let maxX = Math.max(...pose.landmarks.map(lm => lm.x));
-// let minY = Math.min(...pose.landmarks.map(lm => lm.y));
-// let maxY = Math.max(...pose.landmarks.map(lm => lm.y));
-
-// let bboxWidth = maxX - minX;
-// let bboxHeight = maxY - minY;
-
-// if (bboxWidth * bboxHeight > 0.05) {  // Adjust based on your use case
-//     count += 1;
-// }
